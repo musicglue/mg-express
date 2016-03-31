@@ -1,11 +1,13 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel -d lib src",
-    "lint": "eslint app",
+    "babel": "babel -d lib src",
+    "build": "npm run babel && npm run generate-errors",
+    "generate-errors": "babel-node build/errors.js",
+    "lint": "eslint app && eslint build",
     "prepublish": "npm run lint && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,10 +22,15 @@
   },
   "homepage": "https://github.com/musicglue/mg-express#readme",
   "devDependencies": {
+    "axios": "^0.9.1",
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
     "babel-eslint": "^6.0.0",
+    "babel-generator": "^6.7.2",
     "babel-preset-node5": "^11.0.1",
+    "babel-template": "^6.7.0",
+    "babel-types": "^6.7.2",
+    "csv": "^0.4.6",
     "eslint": "^2.5.3",
     "eslint-config-airbnb": "^6.2.0"
   },
