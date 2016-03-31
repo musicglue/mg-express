@@ -3,11 +3,12 @@ import context from 'wrap-async-context';
 
 const Papertrail = require('winston-papertrail').Papertrail;
 
-const consoleLogger = new winston.tranports.Console({
+const consoleLogger = new winston.transports.Console({
   colorize: true,
   handleExceptions: process.env.NODE_ENV !== 'test',
   json: false,
   level: process.env.LOG_LEVEL || 'info',
+  prettyPrint: process.env.NODE_ENV !== 'production',
 });
 
 const transports = [consoleLogger];

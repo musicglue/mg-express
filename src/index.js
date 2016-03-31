@@ -20,6 +20,8 @@ const defaultConfig = {
   name: false,
   ping: '/_____ping_____',
   errorHandler: errorHandler(),
+  beforeHandlers: () => null,
+  afterHandlers: () => null,
 };
 
 export default (options) => {
@@ -41,10 +43,10 @@ export default (options) => {
   process.on('unhandledException', err =>
     logger.error(`Unhandled exception: ${(err && err.stack || util.inspect(err))}`));
 
-  process.env('unhandledRejecion', err =>
+  process.on('unhandledRejecion', err =>
     logger.error(`Unhandled rejection: ${(err && err.stack || util.inspect(err))}`));
 
-  options.before(app);
+  config.before(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.requestHandler);
   if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
@@ -75,8 +77,14 @@ export default (options) => {
 
   config.beforeHandlers(app);
 
-  parseHandlers(config.handlers).forEach((method, url, handler) =>
-    app[method](url, wrap(handler)));
+  if (typeof config.handlers === 'function') {
+    config.handlers(app, wrap);
+  } else if (typeof config.handlers === 'object') {
+    parseHandlers(config.handlers).forEach(({ method, url, handler }) =>
+      app[method](url, wrap(handler)));
+  } else {
+    throw new TypeError('config.handlers must be a function or an object');
+  }
 
   config.afterHandlers(app);
 
