@@ -1,0 +1,41 @@
+{
+  "name": "mg-express",
+  "version": "1.0.0",
+  "description": "Express stuff used on all musicglue services",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel -d lib src",
+    "lint": "eslint app",
+    "prepublish": "npm run lint && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/musicglue/mg-express.git"
+  },
+  "author": "Alex (@somehats)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/musicglue/mg-express/issues"
+  },
+  "homepage": "https://github.com/musicglue/mg-express#readme",
+  "devDependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-core": "^6.7.4",
+    "babel-eslint": "^6.0.0",
+    "babel-preset-node5": "^11.0.1",
+    "eslint": "^2.5.3",
+    "eslint-config-airbnb": "^6.2.0"
+  },
+  "dependencies": {
+    "api-error-handler": "^1.0.0",
+    "body-parser": "^1.15.0",
+    "bugsnag": "^1.7.0",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7",
+    "winston": "^2.2.0",
+    "winston-papertrail": "^1.0.2",
+    "wrap-async-context": "^1.0.2"
+  }
+}
