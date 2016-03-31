@@ -12,16 +12,17 @@ import parseHandlers from './parseHandlers';
 
 const defaultConfig = {
   after: () => null,
+  afterHandlers: () => null,
   amazonJSON: false,
   before: () => null,
+  beforeHandlers: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
+  defaultContentType: 'application/json',
+  errorHandler: errorHandler(),
   logFormat: 'short',
   name: false,
   ping: '/_____ping_____',
-  errorHandler: errorHandler(),
-  beforeHandlers: () => null,
-  afterHandlers: () => null,
 };
 
 export default (options) => {
@@ -52,9 +53,12 @@ export default (options) => {
   if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
 
   /* eslint-disable no-param-reassign */
-  if (config.amazonJSON) app.use((req, res, next) => {
+  if (config.defaultContentType) app.use((req, res, next) => {
     req.headers['content-type'] = req.headers['content-type'] || 'application/json';
+    next();
+  });
 
+  if (config.amazonJSON) app.use((req, res, next) => {
     if (req.headers['user-agent'].indexOf('Amazon') > -1) {
       req.headers['content-type'] = 'application/json';
     }
