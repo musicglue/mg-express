@@ -6,13 +6,13 @@ Automatically sets up logging, error handling, error reporting, and a bunch of o
 # Usage:
 
 ```js
-import setup from 'mg-express';
+import setup from '@musicglue/mg-express';
+import { UnprocessableEntityError } from '@musicglue/mg-express/lib/errors';
 
-class UnmountableHorseError extends Error {
+class UnmountableHorseError extends UnprocessableEntityError {
   constructor(msg) {
     super(msg);
     this.name = 'UnmountableHorseError';
-    this.status = 422;
   }
 }
 
@@ -86,3 +86,16 @@ Hook called after the handlers are attached, but before the error handling middl
 ### after - function(app) - default `() => null`
 Hook called after the app is finished being set up, immediately before it starts listening.
 
+## errors
+```js
+import * from '@musicglue/mg-express/lib/errors';
+```
+
+mg-express has an automatically generated error class for every HTTP response code listed on
+http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+
+These classes set the name and status required for compatibility with api-error-handler, the
+default error handler used by mg-express. To return one of these errors, throw it anywhere in your
+handler promise chain. If you want to return a non-200 status code without throwing one of these
+errors, have your handler promise resolve to an object with a status property with the status code
+you want to use.
