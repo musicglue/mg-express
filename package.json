@@ -1,5 +1,5 @@
 {
-  "name": "mg-express",
+  "name": "@musicglue/mg-express",
   "version": "1.0.0",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
