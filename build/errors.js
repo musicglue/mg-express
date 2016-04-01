@@ -1,6 +1,6 @@
 import axios from 'axios';
 import csv from 'csv';
-import { readFileSync, writeFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 import generate from 'babel-generator';
 import template from 'babel-template';
 import { identifier, stringLiteral, numericLiteral, program } from 'babel-types';
