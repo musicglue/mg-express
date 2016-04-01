@@ -8,8 +8,6 @@ import morgan from 'morgan';
 import util from 'util';
 import uuid from 'node-uuid';
 
-import parseHandlers from './parseHandlers';
-
 const defaultConfig = {
   after: () => null,
   afterHandlers: () => null,
@@ -83,11 +81,8 @@ export default (options) => {
 
   if (typeof config.handlers === 'function') {
     config.handlers(app, wrap);
-  } else if (typeof config.handlers === 'object') {
-    parseHandlers(config.handlers).forEach(({ method, url, handler }) =>
-      app[method](url, wrap(handler)));
   } else {
-    throw new TypeError('config.handlers must be a function or an object');
+    throw new TypeError('config.handlers must be a function');
   }
 
   config.afterHandlers(app);

@@ -1,6 +1,6 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/musicglue/mg-express.git"
   },
   "author": "Alex (@somehats)",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/musicglue/mg-express/issues"
   },
