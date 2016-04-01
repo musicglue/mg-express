@@ -1,11 +1,11 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
-    "babel": "babel -d lib src",
-    "build": "npm run babel && npm run generate-errors",
+    "babel": "babel -d lib src && babel -d lib generated-src",
+    "build": "npm run generate-errors && npm run babel",
     "generate-errors": "babel-node build/errors.js",
     "lint": "eslint app && eslint build",
     "prepublish": "npm run lint && npm run build",

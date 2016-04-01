@@ -5,8 +5,6 @@ import generate from 'babel-generator';
 import template from 'babel-template';
 import { identifier, stringLiteral, numericLiteral, program } from 'babel-types';
 
-const babelOptions = JSON.parse(readFileSync('.babelrc', { encoding: 'utf-8' }));
-
 const parse = string => new Promise((resolve, reject) =>
   csv.parse(string, (err, data) => {
     if (err) return reject(err);
@@ -45,17 +43,17 @@ axios.get('http://www.iana.org/assignments/http-status-codes/http-status-codes-1
   .then(response => parse(response.data))
   .then(codes =>
     codes
-      .filter(([code]) => code.match(/^\d{3}$/))
+      .filter(([code, name]) => code.match(/^\d{3}$/) && name !== 'Unassigned')
       .map(([code, name]) => [parseInt(code, 10), formatName(name)])
       .filter(([code]) => code >= 400)
       .map(toAST))
   .then(errors => {
     writeFileSync(
-      'lib/errors.js',
-      generate(program(errors), babelOptions).code,
+      'generated-src/errors.js',
+      generate(program(errors)).code,
       { encoding: 'utf-8' });
 
-    console.log(`Generated ${errors.length} error classes in lib/errors.js`);
+    console.log(`Generated ${errors.length} error classes in generated-src/errors.js`);
   })
   .catch(e => {
     console.error(e.stack);
