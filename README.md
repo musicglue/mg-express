@@ -21,14 +21,14 @@ export default setup({
   bugsnag: 'abchorse',
   amazonJSON: true, // enable amazonian horses
   beforeHandlers: (app) => app.use(customHorseRelatedMiddleware()),
-  handlers: {
-    'GET /horses': () =>
-      Horses.list().then(horses => ({ payload: horses })),
-    'POST /horses': ({ body }) =>
-      Horses.create(body).then(horse => ({ payload: horse, status: 201 })),
-    'PUT /horses/:horseId/mount': ({ params }) => {
+  handlers: (app, wrap) => {
+    app.get('/horses', wrap(() =>
+      Horses.list().then(horses => ({ payload: horses }))));
+    app.post('/horses', wrap(({ body }) =>
+      Horses.create(body).then(horse => ({ payload: horse, status: 201 }))));
+    app.put('/horses/:horseId/mount', wrap(({ params }) => {
       throw new UnmountableHorseError('woah there!');
-    },
+    }));
   },
 });
 ```
@@ -75,10 +75,6 @@ Hook called for attaching handlers. App is your express app, wrap is a useful fu
 wrapping handlers to hook into the rest of mg-express's goodness. Handlers wrapped with `wrap`
 should take one argument (the request object) and return a Promise of
 `{ payload: ?Object, status: ?number }`. `payload` defaults to `{}`, `status` defaults to `200`.
-
-### handlers - `{ [route: string]: (req: Request) => Promise<{status, payload}> }`
-The recommended way of setting handlers, as shown in the example above. All handlers of this type
-are automatically `wrap`d
 
 ### afterHandlers - function(app) - default `() => null`
 Hook called after the handlers are attached, but before the error handling middleware.
