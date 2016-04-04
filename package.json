@@ -1,6 +1,6 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
@@ -43,6 +43,6 @@
     "node-uuid": "^1.4.7",
     "winston": "^2.2.0",
     "winston-papertrail": "^1.0.2",
-    "wrap-async-context": "^1.0.2"
+    "wrap-async-context": "^1.0.3"
   }
 }
