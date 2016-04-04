@@ -21,7 +21,8 @@ const formatName = name =>
     .split(' ')
     .map(capitalise)
     .concat(['Error'])
-    .join('');
+    .join('')
+    .replace(/ErrorError/, 'Error');
 
 const errorTemplate = template(`
   export class error extends Error {

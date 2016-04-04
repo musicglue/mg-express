@@ -214,10 +214,10 @@ export class UnavailableForLegalReasonsError extends Error {
   }
 
 }
-export class InternalServerErrorError extends Error {
+export class InternalServerError extends Error {
   constructor(msg) {
     super(msg);
-    this.name = "InternalServerErrorError";
+    this.name = "InternalServerError";
     this.status = 500;
   }
 
