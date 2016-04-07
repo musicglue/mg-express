@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import context, { createContextMiddleware } from 'wrap-async-context';
