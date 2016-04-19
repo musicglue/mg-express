@@ -5,7 +5,9 @@ const production = process.env.NODE_ENV === 'production';
 export default (serviceName) => (req, res, next, err) => {
   const status = err.status || err.statusCode || 500;
 
-  res.status(status).json({
+  res.statusCode = status; // eslint-disable-line no-param-reassign
+
+  res.json({
     status,
     stack: production && err.stack,
     message: err.message || statuses[status],
