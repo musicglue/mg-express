@@ -2,12 +2,12 @@ import 'babel-polyfill';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import context, { createContextMiddleware } from 'wrap-async-context';
-import errorHandler from 'api-error-handler';
 import express from 'express';
-import logger from './logger';
 import morgan from 'morgan';
 import util from 'util';
 import uuid from 'node-uuid';
+import logger from './logger';
+import errorHandler from './error-handler';
 
 const defaultConfig = {
   after: () => null,
@@ -18,7 +18,7 @@ const defaultConfig = {
   bodyParser: bodyParser.json(),
   bugsnag: false,
   defaultContentType: 'application/json',
-  errorHandler: errorHandler(),
+  errorHandler,
   logFormat: 'short',
   name: false,
   ping: '/_____ping_____',
@@ -89,7 +89,7 @@ export default (options) => {
   config.afterHandlers(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.errorHandler);
-  if (config.errorHandler) app.use(config.errorHandler);
+  if (config.errorHandler) app.use(config.errorHandler(config.name));
 
   config.after(app);
 
