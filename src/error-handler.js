@@ -17,6 +17,5 @@ export default (serviceName) => (req, res, next, err) => {
     details: err.details,
     cat: `https://http.cat/${status}`,
     origin: serviceName,
-    requestId: req.headers['x-request-id'],
   });
 };
