@@ -21,6 +21,7 @@ const defaultConfig = {
   beforeHandlers: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
+  bugsnagIgnore: [],
   defaultContentType: 'application/json',
   errorHandler,
   logFormat: 'short',
@@ -34,7 +35,7 @@ export default (options) => {
   const test = process.env.NODE_ENV === 'test';
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
-    releaseStage: process.env.AWS_ENV || 'local',
+    releaseStage: 'development' || process.env.AWS_ENV || 'local',
     notifyReleaseStages: ['development', 'production', 'staging'],
     projectRoot: '/app',
     metaData: {
@@ -42,6 +43,15 @@ export default (options) => {
         return (context() || {}).id;
       },
     },
+  });
+
+  if (config.bugsnag) bugsnag.onBeforeNotify(notification => {
+    const event = notification.events[0];
+    const error = event.exceptions[0];
+    if (config.bugsnagIgnore.includes(error.errorClass)) {
+      return false;
+    }
+    return true;
   });
 
   process.on('unhandledException', err =>
