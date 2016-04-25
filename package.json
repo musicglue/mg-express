@@ -38,10 +38,12 @@
     "babel-polyfill": "^6.7.4",
     "body-parser": "^1.15.0",
     "bugsnag": "^1.7.0",
+    "clarify": "^1.0.5",
     "express": "^4.13.4",
     "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
     "statuses": "^1.2.1",
+    "trace": "^2.3.0",
     "winston": "^2.2.0",
     "winston-papertrail": "^1.0.2",
     "wrap-async-context": "^1.0.3"

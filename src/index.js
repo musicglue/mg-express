@@ -1,4 +1,6 @@
 import 'babel-polyfill';
+import 'trace';
+import 'clarify';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import context, { createContextMiddleware } from 'wrap-async-context';
@@ -8,6 +10,8 @@ import util from 'util';
 import uuid from 'node-uuid';
 import logger from './logger';
 import errorHandler from './error-handler';
+
+Error.stackTraceLimit = Infinity;
 
 const defaultConfig = {
   after: () => null,
