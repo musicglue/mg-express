@@ -10,7 +10,9 @@ import util from 'util';
 import uuid from 'node-uuid';
 import logger from './logger';
 import errorHandler from './error-handler';
+import Bluebird from 'bluebird';
 
+global.Promise = Bluebird;
 Error.stackTraceLimit = 1000;
 
 const defaultConfig = {
@@ -27,12 +29,15 @@ const defaultConfig = {
   logFormat: 'short',
   name: false,
   ping: '/_____ping_____',
+  promisify: [],
 };
 
 export default (options) => {
   const config = { ...defaultConfig, ...options };
   const app = express();
   const test = process.env.NODE_ENV === 'test';
+
+  config.promisify.forEach(module => Bluebird.promisifyAll(require(module)));
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage: process.env.AWS_ENV || 'local',

@@ -1,6 +1,6 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.7.4",
+    "bluebird": "^3.3.5",
     "body-parser": "^1.15.0",
     "bugsnag": "^1.7.0",
     "clarify": "^1.0.5",
