@@ -11,7 +11,7 @@ import uuid from 'node-uuid';
 import logger from './logger';
 import errorHandler from './error-handler';
 
-Error.stackTraceLimit = Infinity;
+Error.stackTraceLimit = 1000;
 
 const defaultConfig = {
   after: () => null,
@@ -46,12 +46,9 @@ export default (options) => {
   });
 
   if (config.bugsnag) bugsnag.onBeforeNotify(notification => {
-    const event = notification.events[0];
-    const error = event.exceptions[0];
-    if (config.bugsnagIgnore.includes(error.errorClass)) {
-      return false;
-    }
-    return true;
+    const [event] = notification.events;
+    const [error] = event.exceptions;
+    return !config.bugsnagIgnore.includes(error.errorClass);
   });
 
   process.on('unhandledException', err =>
