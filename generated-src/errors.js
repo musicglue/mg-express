@@ -1,4 +1,12 @@
-export class BadRequestError extends Error {
+export class HttpError extends Error {
+  constructor(msg) {
+    super(msg);
+    this.name = 'HttpError';
+    this.status = 500;
+  }
+
+}
+export class BadRequestError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "BadRequestError";
@@ -6,7 +14,7 @@ export class BadRequestError extends Error {
   }
 
 }
-export class UnauthorizedError extends Error {
+export class UnauthorizedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UnauthorizedError";
@@ -14,7 +22,7 @@ export class UnauthorizedError extends Error {
   }
 
 }
-export class PaymentRequiredError extends Error {
+export class PaymentRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "PaymentRequiredError";
@@ -22,7 +30,7 @@ export class PaymentRequiredError extends Error {
   }
 
 }
-export class ForbiddenError extends Error {
+export class ForbiddenError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "ForbiddenError";
@@ -30,7 +38,7 @@ export class ForbiddenError extends Error {
   }
 
 }
-export class NotFoundError extends Error {
+export class NotFoundError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "NotFoundError";
@@ -38,7 +46,7 @@ export class NotFoundError extends Error {
   }
 
 }
-export class MethodNotAllowedError extends Error {
+export class MethodNotAllowedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "MethodNotAllowedError";
@@ -46,7 +54,7 @@ export class MethodNotAllowedError extends Error {
   }
 
 }
-export class NotAcceptableError extends Error {
+export class NotAcceptableError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "NotAcceptableError";
@@ -54,7 +62,7 @@ export class NotAcceptableError extends Error {
   }
 
 }
-export class ProxyAuthenticationRequiredError extends Error {
+export class ProxyAuthenticationRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "ProxyAuthenticationRequiredError";
@@ -62,7 +70,7 @@ export class ProxyAuthenticationRequiredError extends Error {
   }
 
 }
-export class RequestTimeoutError extends Error {
+export class RequestTimeoutError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "RequestTimeoutError";
@@ -70,7 +78,7 @@ export class RequestTimeoutError extends Error {
   }
 
 }
-export class ConflictError extends Error {
+export class ConflictError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "ConflictError";
@@ -78,7 +86,7 @@ export class ConflictError extends Error {
   }
 
 }
-export class GoneError extends Error {
+export class GoneError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "GoneError";
@@ -86,7 +94,7 @@ export class GoneError extends Error {
   }
 
 }
-export class LengthRequiredError extends Error {
+export class LengthRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "LengthRequiredError";
@@ -94,7 +102,7 @@ export class LengthRequiredError extends Error {
   }
 
 }
-export class PreconditionFailedError extends Error {
+export class PreconditionFailedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "PreconditionFailedError";
@@ -102,7 +110,7 @@ export class PreconditionFailedError extends Error {
   }
 
 }
-export class PayloadTooLargeError extends Error {
+export class PayloadTooLargeError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "PayloadTooLargeError";
@@ -110,7 +118,7 @@ export class PayloadTooLargeError extends Error {
   }
 
 }
-export class UriTooLongError extends Error {
+export class UriTooLongError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UriTooLongError";
@@ -118,7 +126,7 @@ export class UriTooLongError extends Error {
   }
 
 }
-export class UnsupportedMediaTypeError extends Error {
+export class UnsupportedMediaTypeError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UnsupportedMediaTypeError";
@@ -126,7 +134,7 @@ export class UnsupportedMediaTypeError extends Error {
   }
 
 }
-export class RangeNotSatisfiableError extends Error {
+export class RangeNotSatisfiableError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "RangeNotSatisfiableError";
@@ -134,7 +142,7 @@ export class RangeNotSatisfiableError extends Error {
   }
 
 }
-export class ExpectationFailedError extends Error {
+export class ExpectationFailedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "ExpectationFailedError";
@@ -142,7 +150,7 @@ export class ExpectationFailedError extends Error {
   }
 
 }
-export class MisdirectedRequestError extends Error {
+export class MisdirectedRequestError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "MisdirectedRequestError";
@@ -150,7 +158,7 @@ export class MisdirectedRequestError extends Error {
   }
 
 }
-export class UnprocessableEntityError extends Error {
+export class UnprocessableEntityError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UnprocessableEntityError";
@@ -158,7 +166,7 @@ export class UnprocessableEntityError extends Error {
   }
 
 }
-export class LockedError extends Error {
+export class LockedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "LockedError";
@@ -166,7 +174,7 @@ export class LockedError extends Error {
   }
 
 }
-export class FailedDependencyError extends Error {
+export class FailedDependencyError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "FailedDependencyError";
@@ -174,7 +182,7 @@ export class FailedDependencyError extends Error {
   }
 
 }
-export class UpgradeRequiredError extends Error {
+export class UpgradeRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UpgradeRequiredError";
@@ -182,7 +190,7 @@ export class UpgradeRequiredError extends Error {
   }
 
 }
-export class PreconditionRequiredError extends Error {
+export class PreconditionRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "PreconditionRequiredError";
@@ -190,7 +198,7 @@ export class PreconditionRequiredError extends Error {
   }
 
 }
-export class TooManyRequestsError extends Error {
+export class TooManyRequestsError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "TooManyRequestsError";
@@ -198,7 +206,7 @@ export class TooManyRequestsError extends Error {
   }
 
 }
-export class RequestHeaderFieldsTooLargeError extends Error {
+export class RequestHeaderFieldsTooLargeError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "RequestHeaderFieldsTooLargeError";
@@ -206,7 +214,7 @@ export class RequestHeaderFieldsTooLargeError extends Error {
   }
 
 }
-export class UnavailableForLegalReasonsError extends Error {
+export class UnavailableForLegalReasonsError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "UnavailableForLegalReasonsError";
@@ -214,7 +222,7 @@ export class UnavailableForLegalReasonsError extends Error {
   }
 
 }
-export class InternalServerError extends Error {
+export class InternalServerError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "InternalServerError";
@@ -222,7 +230,7 @@ export class InternalServerError extends Error {
   }
 
 }
-export class NotImplementedError extends Error {
+export class NotImplementedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "NotImplementedError";
@@ -230,7 +238,7 @@ export class NotImplementedError extends Error {
   }
 
 }
-export class BadGatewayError extends Error {
+export class BadGatewayError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "BadGatewayError";
@@ -238,7 +246,7 @@ export class BadGatewayError extends Error {
   }
 
 }
-export class ServiceUnavailableError extends Error {
+export class ServiceUnavailableError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "ServiceUnavailableError";
@@ -246,7 +254,7 @@ export class ServiceUnavailableError extends Error {
   }
 
 }
-export class GatewayTimeoutError extends Error {
+export class GatewayTimeoutError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "GatewayTimeoutError";
@@ -254,7 +262,7 @@ export class GatewayTimeoutError extends Error {
   }
 
 }
-export class HttpVersionNotSupportedError extends Error {
+export class HttpVersionNotSupportedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "HttpVersionNotSupportedError";
@@ -262,7 +270,7 @@ export class HttpVersionNotSupportedError extends Error {
   }
 
 }
-export class VariantAlsoNegotiatesError extends Error {
+export class VariantAlsoNegotiatesError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "VariantAlsoNegotiatesError";
@@ -270,7 +278,7 @@ export class VariantAlsoNegotiatesError extends Error {
   }
 
 }
-export class InsufficientStorageError extends Error {
+export class InsufficientStorageError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "InsufficientStorageError";
@@ -278,7 +286,7 @@ export class InsufficientStorageError extends Error {
   }
 
 }
-export class LoopDetectedError extends Error {
+export class LoopDetectedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "LoopDetectedError";
@@ -286,7 +294,7 @@ export class LoopDetectedError extends Error {
   }
 
 }
-export class NotExtendedError extends Error {
+export class NotExtendedError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "NotExtendedError";
@@ -294,7 +302,7 @@ export class NotExtendedError extends Error {
   }
 
 }
-export class NetworkAuthenticationRequiredError extends Error {
+export class NetworkAuthenticationRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
     this.name = "NetworkAuthenticationRequiredError";

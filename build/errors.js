@@ -24,8 +24,18 @@ const formatName = name =>
     .join('')
     .replace(/ErrorError/, 'Error');
 
+const baseError = template(`
+  export class HttpError extends Error {
+    constructor(msg) {
+      super(msg);
+      this.name = 'HttpError';
+      this.status = 500;
+    }
+  }
+`, { sourceType: 'module' });
+
 const errorTemplate = template(`
-  export class error extends Error {
+  export class error extends HttpError {
     constructor(msg) {
       super(msg);
       this.name = errorString;
@@ -51,7 +61,7 @@ axios.get('http://www.iana.org/assignments/http-status-codes/http-status-codes-1
   .then(errors => {
     writeFileSync(
       'generated-src/errors.js',
-      generate(program(errors)).code,
+      generate(program([baseError(), ...errors])).code,
       { encoding: 'utf-8' });
 
     console.log(`Generated ${errors.length} error classes in generated-src/errors.js`);
