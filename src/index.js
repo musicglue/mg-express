@@ -35,7 +35,7 @@ export default (options) => {
   const test = process.env.NODE_ENV === 'test';
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
-    releaseStage: 'development' || process.env.AWS_ENV || 'local',
+    releaseStage: process.env.AWS_ENV || 'local',
     notifyReleaseStages: ['development', 'production', 'staging'],
     projectRoot: '/app',
     metaData: {
