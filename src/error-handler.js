@@ -1,9 +1,12 @@
 import statuses from 'statuses';
+import logger from './logger';
 
 const production = process.env.NODE_ENV === 'production';
 
 export default (serviceName) => (err, req, res, next) => { // eslint-disable-line no-unused-vars
   const status = err.status || err.statusCode || 500;
+
+  logger.error(err.stack || err);
 
   res.status(status).json({
     status,
