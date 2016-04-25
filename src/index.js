@@ -1,4 +1,6 @@
 import 'babel-polyfill';
+import 'trace';
+import 'clarify';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import context, { createContextMiddleware } from 'wrap-async-context';
@@ -9,6 +11,8 @@ import uuid from 'node-uuid';
 import logger from './logger';
 import errorHandler from './error-handler';
 
+Error.stackTraceLimit = Infinity;
+
 const defaultConfig = {
   after: () => null,
   afterHandlers: () => null,
@@ -17,6 +21,7 @@ const defaultConfig = {
   beforeHandlers: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
+  bugsnagIgnore: [],
   defaultContentType: 'application/json',
   errorHandler,
   logFormat: 'short',
@@ -38,6 +43,15 @@ export default (options) => {
         return (context() || {}).id;
       },
     },
+  });
+
+  if (config.bugsnag) bugsnag.onBeforeNotify(notification => {
+    const event = notification.events[0];
+    const error = event.exceptions[0];
+    if (config.bugsnagIgnore.includes(error.errorClass)) {
+      return false;
+    }
+    return true;
   });
 
   process.on('unhandledException', err =>

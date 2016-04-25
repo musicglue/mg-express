@@ -45,6 +45,16 @@ Port to use if there's no `process.env.PORT`.
 Bugsnag key. If provided and the service isn't in test mode, it'll setup bugsnag and attach it
 to the express app
 
+### bugsnagIgnore - Array<string> - default `[]`
+A list of error names that bugsnag should ignore rather than report. e.g.
+
+```js
+bugsnagIgnore: [
+  'BadRequestError',
+  'NotFoundError',
+],
+```
+
 ### ping - string - default `'/_____ping_____'`
 Ping URL. If provided, the service will serve `OK` on get requests to this route.
 
