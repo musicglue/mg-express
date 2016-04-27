@@ -2,12 +2,12 @@ import statuses from 'statuses';
 import logger from './logger';
 
 const production = process.env.NODE_ENV === 'production';
-const test = process.env.NODE_ENV === 'test';
+const logErrors = process.env.NODE_ENV === 'test' ? process.env.LOG_TEST_ERRORS : true;
 
 export default (serviceName) => (err, req, res, next) => { // eslint-disable-line no-unused-vars
   const status = err.status || err.statusCode || 500;
 
-  if (!test) logger.error((err && err.stack) || err);
+  if (logErrors) logger.error((err && err.stack) || err);
 
   res.status(status).json({
     status,
