@@ -25,6 +25,7 @@ const defaultConfig = {
   amazonJSON: false,
   before: () => null,
   beforeHandlers: () => null,
+  beforeListen: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
   bugsnagIgnore: [],
@@ -120,12 +121,14 @@ export default (options) => {
   config.after(app);
 
   if (!test) {
-    const port = process.env.PORT || config.defaultPort;
-    const server = app.listen(port, () => {
-      const host = server.address().address;
-      logger.info(
-        `${config.name || 'Service'} listening at http://${host}:${port} (pid: ${process.pid})`);
-    });
+    Promise.resolve(config.beforeListen())
+      .then(() => {
+        const port = process.env.PORT || config.defaultPort;
+        const server = app.listen(port, () => {
+          const host = server.address().address;
+          logger.info(`${config.name || 'Service'} listening at http://${host}:${port}  (pid: ${process.pid})`);
+        });
+      });
   }
 
   return app;
