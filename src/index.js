@@ -3,13 +3,17 @@ import 'trace';
 import 'clarify';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
+import cluster from 'cluster';
 import context, { createContextMiddleware } from 'wrap-async-context';
 import express from 'express';
 import morgan from 'morgan';
 import util from 'util';
 import uuid from 'node-uuid';
+
 import logger from './logger';
 import errorHandler from './error-handler';
+import setupCluster from './setup-cluster';
+
 import Bluebird from 'bluebird';
 
 global.Promise = Bluebird;
@@ -30,6 +34,7 @@ const defaultConfig = {
   name: false,
   ping: '/_____ping_____',
   promisify: [],
+  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
 };
 
 export default (options) => {
@@ -61,6 +66,11 @@ export default (options) => {
 
   process.on('unhandledRejecion', err =>
     logger.error(`Unhandled rejection: ${(err && err.stack || util.inspect(err))}`));
+
+  if (config.cluster && cluster.isMaster) {
+    setupCluster();
+    return null;
+  }
 
   config.before(app);
 
@@ -113,7 +123,8 @@ export default (options) => {
     const port = process.env.PORT || config.defaultPort;
     const server = app.listen(port, () => {
       const host = server.address().address;
-      logger.info(`${config.name || 'Service'} listening at http://${host}:${port}`);
+      logger.info(
+        `${config.name || 'Service'} listening at http://${host}:${port} (pid: ${process.pid})`);
     });
   }
 
