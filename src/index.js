@@ -13,6 +13,7 @@ import uuid from 'node-uuid';
 import logger from './logger';
 import errorHandler from './error-handler';
 import setupCluster from './setup-cluster';
+import { bootstrapConsul } from './config';
 
 import Bluebird from 'bluebird';
 
@@ -29,6 +30,7 @@ const defaultConfig = {
   bodyParser: bodyParser.json(),
   bugsnag: false,
   bugsnagIgnore: [],
+  consul: null,
   defaultContentType: 'application/json',
   errorHandler,
   logFormat: 'short',
@@ -43,7 +45,10 @@ export default (options) => {
   const app = express();
   const test = process.env.NODE_ENV === 'test';
 
-  config.promisify.forEach(module => Bluebird.promisifyAll(require(module)));
+  config.promisify.forEach(module =>
+    Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
+
+  if (!test && config.consul) bootstrapConsul(config.consul);
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage: process.env.AWS_ENV || 'local',
