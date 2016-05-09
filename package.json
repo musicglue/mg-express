@@ -1,6 +1,6 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "2.2.0",
+  "version": "2.3.1",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
@@ -23,16 +23,17 @@
   "homepage": "https://github.com/musicglue/mg-express#readme",
   "devDependencies": {
     "axios": "^0.9.1",
-    "babel-cli": "^6.6.5",
-    "babel-core": "^6.7.4",
-    "babel-eslint": "^6.0.0",
-    "babel-generator": "^6.7.2",
+    "babel-cli": "^6.8.0",
+    "babel-core": "^6.8.0",
+    "babel-eslint": "^6.0.4",
+    "babel-generator": "^6.8.0",
     "babel-preset-node5": "^11.0.1",
-    "babel-template": "^6.7.0",
-    "babel-types": "^6.7.2",
+    "babel-template": "^6.8.0",
+    "babel-types": "^6.8.0",
     "csv": "^0.4.6",
-    "eslint": "^2.5.3",
-    "eslint-config-airbnb": "^6.2.0"
+    "eslint": "^2.9.0",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.7.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.7.4",
@@ -40,6 +41,7 @@
     "body-parser": "^1.15.0",
     "bugsnag": "^1.7.0",
     "clarify": "^1.0.5",
+    "consul": "^0.25.0",
     "express": "^4.13.4",
     "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
