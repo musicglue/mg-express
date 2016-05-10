@@ -22,14 +22,18 @@ if (process.env.NODE_ENV === 'production' && process.env.PAPERTRAIL_HOST) {
   }));
 }
 
+function ensureLogLevel(level) {
+  return level || 'info';
+}
+
 const logger = new winston.Logger({
   transports,
-  level: config('LOG_LEVEL'),
+  level: ensureLogLevel(config('LOG_LEVEL')),
   exitOnError: false,
 });
 
 subscribe('LOG_LEVEL', level => {
-  logger.level = level;
+  logger.level = ensureLogLevel(level);
 });
 
 logger.stream = {
