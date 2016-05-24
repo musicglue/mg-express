@@ -68,6 +68,10 @@ If the content-type header isn't set, default it to this. Set to something false
 Flag to turn on the amazon json middleware. If the user-agent looks like an amazon one, it sets
 the content-type header to `'application/json'`.
 
+### consul - object - default `null`
+Providing an object with `key` and `url` will bind a consul watcher to that subtree in a consul
+KV store, allowing for dynamic config with the config module
+
 ### bodyParser - middleware - default `bodyParser.json()`
 Body parsing middleware to use by default. Pass something falsey to disable body parsing.
 
@@ -91,6 +95,12 @@ Hook called after the handlers are attached, but before the error handling middl
 
 ### after - function(app) - default `() => null`
 Hook called after the app is finished being set up, immediately before it starts listening.
+
+### beforeListen - function() - default `() => null`
+Hook called immediately before starting to listen
+
+### listen - function(app, port) - default `(app, port) => app.listen(port)`
+Hook called instead of default listen directive to allow custom bindings, e.g. unix sockets
 
 ## errors
 ```js

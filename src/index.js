@@ -33,6 +33,7 @@ const defaultConfig = {
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
+  listen: null,
   logFormat: 'short',
   name: false,
   ping: '/_____ping_____',
@@ -127,8 +128,9 @@ export default (options) => {
 
   if (!test) {
     Promise.resolve(config.beforeListen())
-      .then(() => {
+      .then(() => { // eslint-disable-line consistent-return
         const port = process.env.PORT || config.defaultPort;
+        if (config.listen) return config.listen(app, port);
         const server = app.listen(port, () => {
           const host = server.address().address;
           logger.info(`${config.name || 'Service'} listening at http://${host}:${port}  (pid: ${process.pid})`);
