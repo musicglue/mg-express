@@ -1,10 +1,7 @@
 import 'babel-polyfill';
-import 'trace';
-import 'clarify';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import cluster from 'cluster';
-import context, { createContextMiddleware } from 'wrap-async-context';
 import express from 'express';
 import morgan from 'morgan';
 import util from 'util';
@@ -58,11 +55,6 @@ export default (options) => {
     releaseStage: process.env.AWS_ENV || 'local',
     notifyReleaseStages: ['development', 'production', 'staging'],
     projectRoot: '/app',
-    metaData: {
-      get requestId() {
-        return (context() || {}).id;
-      },
-    },
   });
 
   if (config.bugsnag) bugsnag.onBeforeNotify(notification => {
@@ -103,7 +95,6 @@ export default (options) => {
   /* eslint-enable no-param-reassign */
 
   if (config.bodyParser) app.use(config.bodyParser);
-  app.use(createContextMiddleware(uuid.v4));
 
   const wrap = handler => (req, res, next) =>
     Promise.resolve()
