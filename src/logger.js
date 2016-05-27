@@ -28,13 +28,13 @@ function ensureLogLevel(level) {
 
 const logger = new winston.Logger({
   transports,
-  level: ensureLogLevel(config('LOG_LEVEL')),
+  level: process.env.LOG_LEVEL, // ensureLogLevel(config('LOG_LEVEL')),
   exitOnError: false,
 });
 
-subscribe('LOG_LEVEL', level => {
-  logger.level = ensureLogLevel(level);
-});
+// subscribe('LOG_LEVEL', level => {
+//   logger.level = ensureLogLevel(level);
+// });
 
 logger.stream = {
   write: (message) => logger.info(message),
