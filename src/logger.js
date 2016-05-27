@@ -1,5 +1,4 @@
 import winston from 'winston';
-import context from 'wrap-async-context';
 import config, { subscribe } from './config';
 
 const Papertrail = require('winston-papertrail').Papertrail;
@@ -19,6 +18,7 @@ if (process.env.NODE_ENV === 'production' && process.env.PAPERTRAIL_HOST) {
     port: process.env.PAPERTRAIL_PORT,
     program: process.env.PAPERTRAIL_PROGRAM,
     logFormat: (level, message) => `[${level}][id:${(context() || {}).id}] ${message}`,
+    level: ensureLogLevel(config('LOG_LEVEL')),
   }));
 }
 
@@ -28,13 +28,14 @@ function ensureLogLevel(level) {
 
 const logger = new winston.Logger({
   transports,
-  level: process.env.LOG_LEVEL, // ensureLogLevel(config('LOG_LEVEL')),
+  level: ensureLogLevel(config('LOG_LEVEL')),
   exitOnError: false,
 });
 
-// subscribe('LOG_LEVEL', level => {
-//   logger.level = ensureLogLevel(level);
-// });
+subscribe('LOG_LEVEL', level => {
+  logger.level = ensureLogLevel(level);
+  transports.forEach(transport => { transport.level = ensureLogLevel(level); });
+});
 
 logger.stream = {
   write: (message) => logger.info(message),
