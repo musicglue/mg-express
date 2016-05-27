@@ -40,7 +40,7 @@ const defaultConfig = {
   ping: '/_____ping_____',
   profilingEnabled: !!process.env.PROFILING_ENABLED,
   promisify: [],
-  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
+  cluster: !!process.env.CLUSTER
 };
 
 export default (options) => {
