@@ -10,9 +10,10 @@ import morgan from 'morgan';
 import util from 'util';
 import uuid from 'node-uuid';
 
-import logger from './logger';
 import errorHandler from './error-handler';
+import logger from './logger';
 import setupCluster from './setup-cluster';
+import setupProfiler  from './profiler';
 import { bootstrapConsul } from './config';
 
 import Bluebird from 'bluebird';
@@ -37,6 +38,7 @@ const defaultConfig = {
   logFormat: 'short',
   name: false,
   ping: '/_____ping_____',
+  profilingEnabled: !!process.env.PROFILING_ENABLED,
   promisify: [],
   cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
 };
@@ -50,6 +52,7 @@ export default (options) => {
     Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
 
   if (!test && config.consul) bootstrapConsul(config.consul);
+  if (!test && config.consul && config.profilingEnabled) setupProfiler();
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage: process.env.AWS_ENV || 'local',
