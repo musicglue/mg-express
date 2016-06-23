@@ -11,7 +11,7 @@ const getValue = name => config[name] || process.env[name];
 
 export const subscribe = (key, func) => {
   emitter.on(key, func);
-  func(getValue(key));
+  func(getValue(key), true);
 };
 
 export const bootstrapConsul = ({ key, url = 'http://localhost:8500', ...opts }) => {
@@ -41,13 +41,15 @@ export const bootstrapConsul = ({ key, url = 'http://localhost:8500', ...opts })
     },
   });
 
+  let hasInitialConsulData = false;
+
   watcher.on('change', data => {
     logger.debug('[consul] Change found', data);
     const nextConfig = (data || [])
       .reduce((memo, { Key, Value }) => {
         const name = keyFrom(Key);
         if (name === '') return memo;
-        if (config[name] !== Value) emitter.emit(name, Value);
+        if (config[name] !== Value) emitter.emit(name, Value, !hasInitialConsulData);
         return { ...memo, [name]: Value };
       }, {});
 
@@ -56,7 +58,9 @@ export const bootstrapConsul = ({ key, url = 'http://localhost:8500', ...opts })
     Object
       .keys(config)
       .filter(name => !nextKeys.includes(name))
-      .forEach(name => emitter.emit(name, process.env[name]));
+      .forEach(name => emitter.emit(name, process.env[name], !hasInitialConsulData));
+
+    hasInitialConsulData = true;
 
     config = nextConfig;
   });
