@@ -31,6 +31,7 @@ const defaultConfig = {
   bodyParser: bodyParser.json(),
   bugsnag: false,
   bugsnagIgnore: [],
+  bugsnagFilters: ['password', 'card'],
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
@@ -58,6 +59,8 @@ export default (options) => {
     releaseStage: process.env.AWS_ENV || 'local',
     notifyReleaseStages: ['development', 'production', 'staging'],
     projectRoot: '/app',
+    filters: config.bugsnagFilters,
+    sendCode: true,
     metaData: {
       get requestId() {
         return (context() || {}).id;
