@@ -30,7 +30,7 @@ const defaultConfig = {
   bodyParser: bodyParser.json(),
   bugsnag: false,
   bugsnagIgnore: [],
-  bugsnagFilters: ['password', 'card'],
+  bugsnagFilters: [],
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
@@ -42,6 +42,8 @@ const defaultConfig = {
   promisify: [],
   cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
 };
+
+const baseBugsnagFilters = ['password', 'card'];
 
 export default (options) => {
   const config = { ...defaultConfig, ...options };
@@ -58,7 +60,7 @@ export default (options) => {
     releaseStage: process.env.AWS_ENV || 'local',
     notifyReleaseStages: ['development', 'production', 'staging'],
     projectRoot: '/app',
-    filters: config.bugsnagFilters,
+    filters: [...baseBugsnagFilters, ...config.bugsnagFilters],
     sendCode: true,
   });
 
