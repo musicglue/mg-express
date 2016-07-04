@@ -1,5 +1,4 @@
 import winston from 'winston';
-import context from 'wrap-async-context';
 import config, { subscribe } from './config';
 
 const Papertrail = require('winston-papertrail').Papertrail;
@@ -18,7 +17,7 @@ if (process.env.NODE_ENV === 'production' && process.env.PAPERTRAIL_HOST) {
     host: process.env.PAPERTRAIL_HOST,
     port: process.env.PAPERTRAIL_PORT,
     program: process.env.PAPERTRAIL_PROGRAM,
-    logFormat: (level, message) => `[${level}][id:${(context() || {}).id}] ${message}`,
+    logFormat: (level, message) => `[${level}] ${message}`,
   }));
 }
 

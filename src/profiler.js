@@ -48,4 +48,25 @@ export default () => {
       stop();
     }
   });
+
+  const takeSnapshot = name => {
+    logger.info(`Taking heap snapshot ${name}`);
+    const snapshot = profiler.takeSnapshot();
+    Promise.fromCallback(cb => snapshot.export(cb))
+      .then(result => S3.putObject({
+        Key: `${name}/${os.hostname()}/${process.pid}.heapsnapshot`,
+        Body: result,
+      }).promise())
+      .then(() => logger.info(`Exported & uploaded heap snapshot ${name}`))
+      .catch(err => {
+        logger.error(`Error exporting & uploading heap snapshot ${name}`);
+        throw err;
+      })
+      .finally(() => snapshot.delete());
+  };
+
+  subscribe('V8_HEAP_SNAPSHOT', (value, initial) => {
+    console.log('V8_HEAP_SNAPSHOT', { value, initial });
+    if (value && !initial) takeSnapshot(value);
+  });
 };
