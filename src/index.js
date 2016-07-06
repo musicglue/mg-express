@@ -7,12 +7,11 @@ import cluster from 'cluster';
 import express from 'express';
 import morgan from 'morgan';
 import util from 'util';
-import uuid from 'node-uuid';
 
 import errorHandler from './error-handler';
 import logger from './logger';
 import setupCluster from './setup-cluster';
-import setupProfiler  from './profiler';
+import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
 
 import Bluebird from 'bluebird';
@@ -31,6 +30,7 @@ const defaultConfig = {
   bugsnag: false,
   bugsnagIgnore: [],
   bugsnagFilters: [],
+  bugsnagOnBeforeNotify: null,
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
@@ -56,19 +56,25 @@ export default (options) => {
   if (!test && config.consul) bootstrapConsul(config.consul);
   if (!test && config.consul && config.profilingEnabled) setupProfiler();
 
-  if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
-    releaseStage: process.env.AWS_ENV || 'local',
-    notifyReleaseStages: ['development', 'production', 'staging'],
-    projectRoot: '/app',
-    filters: [...baseBugsnagFilters, ...config.bugsnagFilters],
-    sendCode: true,
-  });
+  if (!test && config.bugsnag) {
+    bugsnag.register(config.bugsnag, {
+      releaseStage: process.env.AWS_ENV || 'local',
+      notifyReleaseStages: ['development', 'production', 'staging'],
+      projectRoot: '/app',
+      filters: [...baseBugsnagFilters, ...config.bugsnagFilters],
+      sendCode: true,
+    });
 
-  if (config.bugsnag) bugsnag.onBeforeNotify(notification => {
-    const [event] = notification.events;
-    const [error] = event.exceptions;
-    return !config.bugsnagIgnore.includes(error.errorClass);
-  });
+    bugsnag.onBeforeNotify(notification => {
+      const [event] = notification.events;
+      const [error] = event.exceptions;
+      return !config.bugsnagIgnore.includes(error.errorClass);
+    });
+
+    if (config.bugsnagOnBeforeNotify) {
+      bugsnag.onBeforeNotify(config.bugsnagOnBeforeNotify);
+    }
+  }
 
   process.on('unhandledException', err =>
     logger.error(`Unhandled exception: ${(err && err.stack || util.inspect(err))}`));
