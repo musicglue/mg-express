@@ -7,12 +7,11 @@ import cluster from 'cluster';
 import express from 'express';
 import morgan from 'morgan';
 import util from 'util';
-import uuid from 'node-uuid';
 
 import errorHandler from './error-handler';
 import logger from './logger';
 import setupCluster from './setup-cluster';
-import setupProfiler  from './profiler';
+import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
 
 import Bluebird from 'bluebird';
