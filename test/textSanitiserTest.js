@@ -65,4 +65,18 @@ describe('error sanitiser', () => {
          '{"blah":{"card":"asdf","cvc":"***",' +
            '"zoo":{"monkeys":"12", "cardNumber":"**7744"}, "woo":{"password":"***********"}}'));
   });
+
+  describe('the error message contains a field that is quoted using single quotes', () => {
+    const text = '"foo":{"zoo":{\'password\':\'bleep\'';
+
+    it('replaces all the charactes with stars and leaves the single quotes intact', () =>
+      expect(sanitise(text)).to.equal('"foo":{"zoo":{\'password\':\'*****\''));
+  });
+
+  describe('the error message contains a field that is not quoted', () => {
+    const text = 'password : \'bleep\'';
+
+    it('replaces all the charactes with stars and leaves the single quotes intact', () =>
+      expect(sanitise(text)).to.equal('password : \'*****\''));
+  });
 });

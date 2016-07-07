@@ -1,12 +1,14 @@
 export const sanitise = (field, mutate) => (text) => {
-  const regexp = new RegExp(`"${field}"\s?:\s?"([^"]+)"`);
+  const regexp = new RegExp(`(["']?${field}["']?\\s*:\\s*["']?)([^"']+)(["']?)`);
   const match = text.match(regexp);
 
   if (!match) return text;
 
-  const mutated = mutate(match[1]);
+  const prefix = match[1];
+  const mutated = mutate(match[2]);
+  const suffix = match[3];
 
-  return text.replace(regexp, `"${field}":"${mutated}"`);
+  return text.replace(regexp, `${prefix}${mutated}${suffix}`);
 };
 
 export const replace = (selection, replacement) => (text) => text.replace(selection, replacement);
