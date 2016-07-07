@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sanitise from '../src/textSanitiser';
 
-describe.only('error sanitiser', () => {
+describe('error sanitiser', () => {
   describe('the error message does not contain anything that looks sensitive', () => {
     const text = 'foo is blah pass word cvx cord number';
 
