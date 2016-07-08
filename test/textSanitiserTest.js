@@ -80,10 +80,10 @@ describe('error sanitiser', () => {
       expect(sanitise(text)).to.equal('password : \'*****\''));
   });
 
-  describe('the error message contains a field that is not quoted', () => {
-    const text = 'password : \'bleep\'';
+  describe('the error message contains a field that is not quoted and contains escape chars', () => {
+    const text = 'password : "a\'b"';
 
     it('replaces all the charactes with stars and leaves the single quotes intact', () =>
-      expect(sanitise(text)).to.equal('add embedded quotes test case here'));
+      expect(sanitise(text)).to.equal('password : "***"'));
   });
 });

@@ -1,14 +1,51 @@
-export const sanitise = (field, mutate) => (text) => {
-  const regexp = new RegExp(`(["']?${field}["']?\\s*:\\s*["']?)([^"']+)(["']?)`);
-  const match = text.match(regexp);
+const cache = {};
+const splitter = '\\s*[^?]:\\s*';
+const values = [
+  '"((?:\\"|[^"])*?)"',
+  '\'((?:\\\'|[^\'])*?)\'',
+];
 
-  if (!match) return text;
+const buildFinders = field => {
+  const keys = [
+    field,
+    `"${field}"`,
+    `'${field}'`,
+  ];
 
-  const prefix = match[1];
-  const mutated = mutate(match[2]);
-  const suffix = match[3];
+  const regexp = key => value => ({
+    regexp: new RegExp(`${key}${splitter}${value}`),
+    key,
+    value,
+  });
 
-  return text.replace(regexp, `${prefix}${mutated}${suffix}`);
+  return keys.reduce((memo, key) => memo.concat(...values.map(regexp(key))), []);
+};
+
+const getFinders = field => {
+  const finders = cache[field];
+  if (finders) return finders;
+
+  return (cache[field] = buildFinders(field));
+};
+
+const extract = (finder, text) => {
+  const extractor = new RegExp(`(.*${finder.key}${splitter})${finder.value}(.*)`);
+  const match = text.match(extractor);
+
+  return match.slice(1, 4);
+};
+
+const sanitise = (field, mutate) => text => {
+  const finders = getFinders(field);
+  const finder = finders.find(f => f.regexp.test(text));
+
+  if (!finder) return text;
+
+  const delimiter = finder.value[0];
+  const [before, sensitive, after] = extract(finder, text);
+  const sanitised = mutate(sensitive);
+
+  return `${before}${delimiter}${sanitised}${delimiter}${after}`;
 };
 
 export const replace = (selection, replacement) => (text) => text.replace(selection, replacement);
@@ -24,4 +61,3 @@ export const sanitisers = [
 export default function (text) {
   return sanitisers.reduce((p, c) => c(p), text);
 }
-
