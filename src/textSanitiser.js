@@ -1,5 +1,6 @@
 const cache = {};
-const splitter = '\\s*[^?]:\\s*';
+const escapeChars = '\\u001b\\[\\d{1,2}m';
+const splitter = `(?:${escapeChars}|\\s)*[^?]:(?:${escapeChars}|\\s)*`;
 const values = [
   '"((?:\\"|[^"])*?)"',
   '\'((?:\\\'|[^\'])*?)\'',
@@ -13,7 +14,7 @@ const buildFinders = field => {
   ];
 
   const regexp = key => value => ({
-    regexp: new RegExp(`${key}${splitter}${value}`),
+    regexp: new RegExp(`${key}${splitter}${value}`, 'i'),
     key,
     value,
   });
@@ -29,7 +30,7 @@ const getFinders = field => {
 };
 
 const extract = (finder, text) => {
-  const extractor = new RegExp(`(.*${finder.key}${splitter})${finder.value}(.*)`);
+  const extractor = new RegExp(`(.*${finder.key}${splitter})${finder.value}(.*)`, 'i');
   const match = text.match(extractor);
 
   return match.slice(1, 4);
@@ -38,7 +39,6 @@ const extract = (finder, text) => {
 const sanitise = (field, mutate) => text => {
   const finders = getFinders(field);
   const finder = finders.find(f => f.regexp.test(text));
-
   if (!finder) return text;
 
   const delimiter = finder.value[0];
