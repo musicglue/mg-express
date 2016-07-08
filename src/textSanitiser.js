@@ -1,6 +1,6 @@
 const cache = {};
 const escapeChars = '\\u001b\\[\\d{1,2}m';
-const splitter = `(?:${escapeChars}|\\s)*[^?]:(?:${escapeChars}|\\s)*`;
+const splitter = `(?:${escapeChars}|\\s)*:(?:${escapeChars}|\\s)*`;
 const values = [
   '"((?:\\"|[^"])*?)"',
   '\'((?:\\\'|[^\'])*?)\'',
@@ -14,7 +14,7 @@ const buildFinders = field => {
   ];
 
   const regexp = key => value => ({
-    regexp: new RegExp(`${key}${splitter}${value}`, 'i'),
+    regexp: new RegExp(`${key}${splitter}${value}`, 'gi'),
     key,
     value,
   });
@@ -36,16 +36,19 @@ const extract = (finder, text) => {
   return match.slice(1, 4);
 };
 
-const sanitise = (field, mutate) => text => {
-  const finders = getFinders(field);
-  const finder = finders.find(f => f.regexp.test(text));
-  if (!finder) return text;
-
+const mutateMatch = (finder, mutate) => match => {
   const delimiter = finder.value[0];
-  const [before, sensitive, after] = extract(finder, text);
+  const [before, sensitive, after] = extract(finder, match);
   const sanitised = mutate(sensitive);
 
   return `${before}${delimiter}${sanitised}${delimiter}${after}`;
+};
+
+const sanitise = (field, mutate) => text => {
+  const finders = getFinders(field);
+
+  return finders.reduce((str, finder) => str.replace(
+    finder.regexp, mutateMatch(finder, mutate)), text);
 };
 
 export const replace = (selection, replacement) => (text) => text.replace(selection, replacement);
@@ -58,6 +61,18 @@ export const sanitisers = [
   sanitise('password', starAllChars),
 ];
 
+const sanitiseLine = line => {
+  let previousLine = null;
+  let currentLine = line;
+
+  while (previousLine !== currentLine) {
+    previousLine = currentLine;
+    currentLine = sanitisers.reduce((p, c) => c(p), previousLine);
+  }
+
+  return currentLine;
+};
+
 export default function (text) {
-  return sanitisers.reduce((p, c) => c(p), text);
+  return text.split('\n').map(sanitiseLine).join('\n');
 }

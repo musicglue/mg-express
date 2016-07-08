@@ -80,6 +80,13 @@ describe('error sanitiser', () => {
       expect(sanitise(text)).to.equal('password : \'*****\''));
   });
 
+  describe('the error message contains a multiple instances of the same field', () => {
+    const text = 'password : \'abc\', \'password\' : "uvwxyz"';
+
+    it('replaces all the charactes with stars and leaves the single quotes intact', () =>
+      expect(sanitise(text)).to.equal('password : \'***\', \'password\' : "******"'));
+  });
+
   describe('the error message contains a field that is mixed case', () => {
     const text = 'PassWord : \'bleep\'';
 
@@ -94,10 +101,21 @@ describe('error sanitiser', () => {
       expect(sanitise(text)).to.equal('password : "***"'));
   });
 
+  describe('the error message contains multiple lines', () => {
+    const text = `some text
+password : "a'b"'
+foo`;
+
+    it('replaces all the sensitive charactes with stars and leaves the other lines intact', () =>
+      expect(sanitise(text)).to.equal(`some text
+password : "***"'
+foo`));
+  });
+
   describe('the error message contains a field that is not quoted and contains colour codes', () => {
-    const text = 'password : \u001b[32m\'xyz\'\u001b[39m';
+    const text = '42424242\'\u001b[39m,\n     cvc: \u001b[32m\'123\'\u001b[39m,\n     expiry: { month: \u001b';
 
     it('replaces all the senstive charactes with stars and leaves the colour codes intact', () =>
-      expect(sanitise(text)).to.equal('password : \u001b[32m\'***\'\u001b[39m'));
+      expect(sanitise(text)).to.equal('42424242\'\u001b[39m,\n     cvc: \u001b[32m\'***\'\u001b[39m,\n     expiry: { month: \u001b'));
   });
 });
