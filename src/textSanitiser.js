@@ -61,17 +61,7 @@ export const sanitisers = [
   sanitise('password', starAllChars),
 ];
 
-const sanitiseLine = line => {
-  let previousLine = null;
-  let currentLine = line;
-
-  while (previousLine !== currentLine) {
-    previousLine = currentLine;
-    currentLine = sanitisers.reduce((p, c) => c(p), previousLine);
-  }
-
-  return currentLine;
-};
+const sanitiseLine = line => sanitisers.reduce((p, c) => c(p), line);
 
 export default function (text) {
   return text.split('\n').map(sanitiseLine).join('\n');
