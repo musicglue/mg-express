@@ -1,12 +1,54 @@
-export const sanitise = (field, mutate) => (text) => {
-  const regexp = new RegExp(`"${field}"\s?:\s?"([^"]+)"`);
-  const match = text.match(regexp);
+const cache = {};
+const escapeChars = '\\u001b\\[\\d{1,2}m';
+const splitter = `(?:${escapeChars}|\\s)*:(?:${escapeChars}|\\s)*`;
+const values = [
+  '"((?:\\"|[^"])*?)"',
+  '\'((?:\\\'|[^\'])*?)\'',
+];
 
-  if (!match) return text;
+const buildFinders = field => {
+  const keys = [
+    field,
+    `"${field}"`,
+    `'${field}'`,
+  ];
 
-  const mutated = mutate(match[1]);
+  const regexp = key => value => ({
+    regexp: new RegExp(`${key}${splitter}${value}`, 'gi'),
+    key,
+    value,
+  });
 
-  return text.replace(regexp, `"${field}":"${mutated}"`);
+  return keys.reduce((memo, key) => memo.concat(...values.map(regexp(key))), []);
+};
+
+const getFinders = field => {
+  const finders = cache[field];
+  if (finders) return finders;
+
+  return (cache[field] = buildFinders(field));
+};
+
+const extract = (finder, text) => {
+  const extractor = new RegExp(`(.*${finder.key}${splitter})${finder.value}(.*)`, 'i');
+  const match = text.match(extractor);
+
+  return match.slice(1, 4);
+};
+
+const mutateMatch = (finder, mutate) => match => {
+  const delimiter = finder.value[0];
+  const [before, sensitive, after] = extract(finder, match);
+  const sanitised = mutate(sensitive);
+
+  return `${before}${delimiter}${sanitised}${delimiter}${after}`;
+};
+
+const sanitise = (field, mutate) => text => {
+  const finders = getFinders(field);
+
+  return finders.reduce((str, finder) => str.replace(
+    finder.regexp, mutateMatch(finder, mutate)), text);
 };
 
 export const replace = (selection, replacement) => (text) => text.replace(selection, replacement);
@@ -19,7 +61,8 @@ export const sanitisers = [
   sanitise('password', starAllChars),
 ];
 
-export default function (text) {
-  return sanitisers.reduce((p, c) => c(p), text);
-}
+const sanitiseLine = line => sanitisers.reduce((p, c) => c(p), line);
 
+export default function (text) {
+  return text.split('\n').map(sanitiseLine).join('\n');
+}
