@@ -13,6 +13,7 @@ import logger from './logger';
 import setupCluster from './setupCluster';
 import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
+import { setup as setupDatadog } from './metrics';
 
 import Bluebird from 'bluebird';
 
@@ -31,6 +32,8 @@ const defaultConfig = {
   bugsnagIgnore: [],
   bugsnagFilters: [],
   consul: null,
+  datadog: null,
+  datadogTags: [],
   defaultContentType: 'application/json',
   errorHandler,
   listen: null,
@@ -79,6 +82,8 @@ export default (options) => {
     setupCluster();
     return null;
   }
+
+  if (config.datadog)
 
   config.before(app);
 
