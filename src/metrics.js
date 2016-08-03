@@ -31,7 +31,7 @@ export const setup = ({ apiKey, appKey }, tags = []) => {
     return;
   }
   dogapi.initialize({ api_key: apiKey, app_key: appKey });
-  defaultTags = [];
+  defaultTags = tags;
   isSetup = true;
 
   setInterval(flushQueue, FLUSH_INTERVAL);

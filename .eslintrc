@@ -6,6 +6,7 @@
   "extends": "airbnb-base",
   "parser": "babel-eslint",
   "rules": {
-    "curly": 0
+    "curly": 0,
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
   }
 }
