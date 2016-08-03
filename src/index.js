@@ -13,6 +13,7 @@ import logger from './logger';
 import setupCluster from './setupCluster';
 import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
+import * as metrics from './metrics';
 
 import Bluebird from 'bluebird';
 
@@ -31,6 +32,8 @@ const defaultConfig = {
   bugsnagIgnore: [],
   bugsnagFilters: [],
   consul: null,
+  datadog: null,
+  datadogTags: [],
   defaultContentType: 'application/json',
   errorHandler,
   listen: null,
@@ -80,10 +83,13 @@ export default (options) => {
     return null;
   }
 
+  if (!test && config.datadog) metrics.setup(config.datadog, config.datadogTags);
+
   config.before(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.requestHandler);
   if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
+  if (!test && config.datadog) app.use(metrics.middleware);
 
   /* eslint-disable no-param-reassign */
   if (config.defaultContentType) app.use((req, res, next) => {
