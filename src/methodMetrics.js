@@ -17,7 +17,7 @@ export default (instance, key, instanceName, methods) => {
             `method:${instanceName}/${methodName}`,
           ];
           metrics.count(`node.${key}.call`, 1, tags);
-          metrics.guage(`node.${key}.time`, duration, tags);
+          metrics.gauge(`node.${key}.time`, duration, tags);
         });
 
       return result;

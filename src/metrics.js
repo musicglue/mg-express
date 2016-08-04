@@ -57,7 +57,11 @@ const reporter = type => (metric, value, tags) =>
     .points
     .push([Math.floor(Date.now() / 1000), value]);
 
-export const guage = reporter('guage');
+export const gauge = reporter('gauge');
+export const guage = (...args) => {
+  logger.warn('[metrics] guage is deprecated because @somehats cant spell. use gauge instead 🦄');
+  return gauge(...args);
+};
 export const count = reporter('count');
 
 export const middleware = (req, res, next) => {
@@ -82,7 +86,7 @@ export const middleware = (req, res, next) => {
     ];
 
     count('node.express.request', 1, tags);
-    guage('node.express.response_time', new Date() - req._startTime, tags);
+    gauge('node.express.response_time', new Date() - req._startTime, tags);
   };
 
   next();
