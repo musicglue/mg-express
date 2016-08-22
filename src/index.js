@@ -62,7 +62,7 @@ export default (options) => {
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage,
-    notifyReleaseStages: releaseState !== 'local' ? [releaseStage] : [],
+    notifyReleaseStages: releaseStage !== 'local' ? [releaseStage] : [],
     projectRoot: '/app',
     filters: [...baseBugsnagFilters, ...config.bugsnagFilters],
     sendCode: true,
