@@ -51,6 +51,7 @@ export default (options) => {
   const config = { ...defaultConfig, ...options };
   const app = express();
   const test = process.env.NODE_ENV === 'test';
+  const releaseState = process.env.AWS_ENV || 'local';
 
   config.promisify.forEach(module =>
     Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
@@ -58,9 +59,10 @@ export default (options) => {
   if (!test && config.consul) bootstrapConsul(config.consul);
   if (!test && config.consul && config.profilingEnabled) setupProfiler();
 
+
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
-    releaseStage: process.env.AWS_ENV || 'local',
-    notifyReleaseStages: ['development', 'production', 'staging'],
+    releaseStage,
+    notifyReleaseStages: releaseState !== 'local' ? [releaseStage] : [],
     projectRoot: '/app',
     filters: [...baseBugsnagFilters, ...config.bugsnagFilters],
     sendCode: true,
