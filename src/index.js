@@ -51,7 +51,7 @@ export default (options) => {
   const config = { ...defaultConfig, ...options };
   const app = express();
   const test = process.env.NODE_ENV === 'test';
-  const releaseState = process.env.AWS_ENV || 'local';
+  const releaseStage = process.env.AWS_ENV || 'local';
 
   config.promisify.forEach(module =>
     Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
