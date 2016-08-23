@@ -7,6 +7,7 @@ import cluster from 'cluster';
 import express from 'express';
 import morgan from 'morgan';
 import util from 'util';
+import Bluebird from 'bluebird';
 
 import errorHandler from './errorHandler';
 import logger from './logger';
@@ -14,8 +15,6 @@ import setupCluster from './setupCluster';
 import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
 import * as metrics from './metrics';
-
-import Bluebird from 'bluebird';
 
 global.Promise = Bluebird;
 Error.stackTraceLimit = 1000;
@@ -59,7 +58,6 @@ export default (options) => {
   if (!test && config.consul) bootstrapConsul(config.consul);
   if (!test && config.consul && config.profilingEnabled) setupProfiler();
 
-
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage,
     notifyReleaseStages: releaseStage !== 'local' ? [releaseStage] : [],
@@ -75,10 +73,10 @@ export default (options) => {
   });
 
   process.on('unhandledException', err =>
-    logger.error(`Unhandled exception: ${(err && err.stack || util.inspect(err))}`));
+    logger.error(`Unhandled exception: ${((err && err.stack) || util.inspect(err))}`));
 
   process.on('unhandledRejecion', err =>
-    logger.error(`Unhandled rejection: ${(err && err.stack || util.inspect(err))}`));
+    logger.error(`Unhandled rejection: ${((err && err.stack) || util.inspect(err))}`));
 
   if (config.cluster && cluster.isMaster) {
     setupCluster();
