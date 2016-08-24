@@ -54,6 +54,6 @@
     "trace": "^2.3.0",
     "v8-profiler": "^5.6.5",
     "winston": "^2.2.0",
-    "winston-papertrail": "^1.0.2"
+    "winston-papertrail": "^1.0.3"
   }
 }
