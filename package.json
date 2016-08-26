@@ -43,7 +43,7 @@
     "babel-polyfill": "^6.9.1",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
-    "bugsnag": "^1.7.0",
+    "bugsnag": "^1.8.0",
     "clarify": "^2.0.0",
     "consul": "^0.25.0",
     "dogapi": "^2.4.1",
