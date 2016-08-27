@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/musicglue/mg-express#readme",
   "devDependencies": {
-    "axios": "^0.13.1",
+    "axios": "^0.14.0",
     "babel-cli": "^6.11.4",
     "babel-core": "^6.11.4",
     "babel-eslint": "^6.1.2",
