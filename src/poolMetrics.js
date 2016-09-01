@@ -1,3 +1,4 @@
+import { pick } from 'lodash';
 import * as metrics from './metrics';
 
 const INTERVAL = 1000;
@@ -6,17 +7,16 @@ const reportStats = (stats, name) => {
   Object
     .entries(stats)
     .forEach(([key, value]) =>
-      metrics.gauge(`node.pool.${name}.${key}`, value));
+      metrics.report(`node.pool.${name}.${key}`, value));
 };
 
 // client.stats:
 // { min, max, allocated, available, queued, maxRequests }
 export const knex = ({ client }, name = 'knex') =>
-  setInterval(() => reportStats(client.pool.stats(), name), INTERVAL);
+  setInterval(() =>
+    reportStats(pick(client.pool.stats(), ['allocated', 'available', 'queued']), name), INTERVAL);
 
 const pgPoolStats = pool => ({
-  min: pool.getMinPoolSize(),
-  max: pool.getMaxPoolSize(),
   allocated: pool.inUseObjectsCount(),
   available: pool.getPoolSize(),
   queued: pool.waitingClientsCount(),
