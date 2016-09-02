@@ -28,11 +28,10 @@ const defaultConfig = {
   beforeListen: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
-  bugsnagIgnore: [],
   bugsnagFilters: [],
+  bugsnagIgnore: [],
+  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
   consul: null,
-  datadog: null,
-  datadogTags: [],
   defaultContentType: 'application/json',
   errorHandler,
   listen: null,
@@ -41,7 +40,8 @@ const defaultConfig = {
   ping: '/_____ping_____',
   profilingEnabled: !!process.env.PROFILING_ENABLED,
   promisify: [],
-  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
+  statsd: null,
+  statsdMiddleware: true,
 };
 
 const baseBugsnagFilters = ['password', 'card'];
@@ -83,13 +83,13 @@ export default (options) => {
     return null;
   }
 
-  if (!test && config.datadog) metrics.setup(config.datadog, config.datadogTags);
+  if (!test && config.statsd) metrics.setup(config.statsd);
 
   config.before(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.requestHandler);
   if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
-  if (!test && config.datadog) app.use(metrics.middleware);
+  if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
 
   /* eslint-disable no-param-reassign */
   if (config.defaultContentType) app.use((req, res, next) => {
