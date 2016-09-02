@@ -9,7 +9,7 @@ export const setup = ({ host, port, prefix }) => {
     return;
   }
 
-  statsd = new StatsD(host, port, `${prefix}.`, null, false, null, false, null);
+  statsd = new StatsD(host, port, `${prefix}.`);
 };
 
 const reporter = type => (...args) => {
@@ -28,7 +28,7 @@ const START_TIME = Symbol();
 
 /* eslint-disable no-param-reassign */
 export const middleware = (req, res, next) => {
-  if (!req[START_TIME]) req[START_TIME] = new Date();
+  if (!req[START_TIME]) req[START_TIME] = Date.now();
 
   increment('requestStart');
 
