@@ -1,92 +1,47 @@
-import dogapi from 'dogapi';
-import os from 'os';
-
+import StatsD from 'node-statsd';
 import logger from './logger';
 
-const FLUSH_INTERVAL = 10000;
-const host = os.hostname();
+let statsd = null;
 
-let defaultTags = [];
-let isSetup = false;
-let queues = {};
-
-const flushQueue = () => {
-  const metrics = Object.values(queues);
-  queues = {};
-  if (metrics.length > 0 && isSetup) {
-    logger.debug(`[metrics] Sending ${metrics.length} metric sets to datadog...`);
-    dogapi.metric.send_all(metrics, (err, res) => {
-      if (err || !(res && res.status === 'ok')) {
-        logger.error('[metrics] error sending metrics to datadog:', err, res);
-      } else {
-        logger.debug('[metrics] successfully sent metrics to datadog');
-      }
-    });
-  }
-};
-
-export const setup = ({ apiKey, appKey }, tags = []) => {
-  if (!(apiKey && appKey)) {
-    logger.debug('[metrics] setup called without datadog apiKey and appKey');
+export const setup = ({ host, port, prefix }) => {
+  if (!(host && port)) {
+    logger.debug('[metrics] setup called without statsd host and port');
     return;
   }
-  dogapi.initialize({ api_key: apiKey, app_key: appKey });
-  defaultTags = tags;
-  isSetup = true;
 
-  setInterval(flushQueue, FLUSH_INTERVAL);
+  statsd = new StatsD(host, port, `${prefix}.`);
 };
 
-const getQueue = (type, metric, tags) => {
-  const key = `${type}::${metric}::${tags ? tags.join('|') : ''}`;
-  if (!queues[key]) {
-    queues[key] = {
-      metric,
-      points: [],
-      host,
-      tags: tags ? tags.concat(defaultTags) : defaultTags,
-      type,
-    };
-  }
-
-  return queues[key];
+const reporter = type => (...args) => {
+  if (statsd) statsd[type](...args);
 };
 
-const reporter = type => (metric, value, tags) =>
-  getQueue(type, metric, tags)
-    .points
-    .push([Math.floor(Date.now() / 1000), value]);
-
+export const timing = reporter('timing');
+export const increment = reporter('increment');
+export const decrement = reporter('decrement');
+export const histogram = reporter('histogram');
 export const gauge = reporter('gauge');
-export const guage = (...args) => {
-  logger.warn('[metrics] guage is deprecated because @somehats cant spell. use gauge instead 🦄');
-  return gauge(...args);
-};
-export const count = reporter('count');
+export const set = reporter('set');
+export const unique = reporter('unique');
 
+const START_TIME = Symbol();
+
+/* eslint-disable no-param-reassign */
 export const middleware = (req, res, next) => {
-  if (!req._startTime) req._startTime = new Date();
+  if (!req[START_TIME]) req[START_TIME] = Date.now();
 
+  increment('requestStart');
 
   const end = res.end;
   res.end = (chunk, encoding) => {
     res.end = end;
     res.end(chunk, encoding);
 
-    if (!req.route || !req.route.path) {
-      logger.debug('[metrics][middleware] request without route ended', req);
-      return;
-    }
+    const method = req.method.toLowerCase();
+    const route = ((req.route && req.route.path) || 'UNKNOWN_ROUTE')
+      .replace(/[^a-zA-Z0-9]+/g, '_');
 
-    const tags = [
-      `route:${req.route.path}`,
-      `method:${req.method.toLowerCase()}`,
-      `response_code:${res.statusCode}`,
-      `response_class:${Math.floor(res.statusCode / 100)}xx`,
-    ];
-
-    count('node.express.request', 1, tags);
-    gauge('node.express.response_time', new Date() - req._startTime, tags);
+    timing(`routes.${method}.${route}.response.${res.statusCode}`, Date.now() - req[START_TIME]);
   };
 
   next();

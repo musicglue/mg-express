@@ -6,6 +6,7 @@ import bugsnag from 'bugsnag';
 import cluster from 'cluster';
 import express from 'express';
 import morgan from 'morgan';
+import os from 'os';
 import util from 'util';
 import Bluebird from 'bluebird';
 
@@ -28,11 +29,11 @@ const defaultConfig = {
   beforeListen: () => null,
   bodyParser: bodyParser.json(),
   bugsnag: false,
-  bugsnagIgnore: [],
   bugsnagFilters: [],
+  bugsnagIgnore: [],
+  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
+  clusterSize: Math.min(1, parseInt(process.env.CLUSTER_SIZE || os.cpus().length - 1, 10)),
   consul: null,
-  datadog: null,
-  datadogTags: [],
   defaultContentType: 'application/json',
   errorHandler,
   listen: null,
@@ -41,7 +42,8 @@ const defaultConfig = {
   ping: '/_____ping_____',
   profilingEnabled: !!process.env.PROFILING_ENABLED,
   promisify: [],
-  cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
+  statsd: null,
+  statsdMiddleware: true,
 };
 
 const baseBugsnagFilters = ['password', 'card'];
@@ -79,17 +81,17 @@ export default (options) => {
     logger.error(`Unhandled rejection: ${((err && err.stack) || util.inspect(err))}`));
 
   if (config.cluster && cluster.isMaster) {
-    setupCluster();
+    setupCluster(config.clusterSize);
     return null;
   }
 
-  if (!test && config.datadog) metrics.setup(config.datadog, config.datadogTags);
+  if (!test && config.statsd) metrics.setup(config.statsd);
 
   config.before(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.requestHandler);
   if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
-  if (!test && config.datadog) app.use(metrics.middleware);
+  if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
 
   /* eslint-disable no-param-reassign */
   if (config.defaultContentType) app.use((req, res, next) => {

@@ -6,7 +6,7 @@ const reportStats = (stats, name) => {
   Object
     .entries(stats)
     .forEach(([key, value]) =>
-      metrics.gauge(`node.pool.${name}.${key}`, value));
+      metrics.gauge(`pools.${name}.${key}`, value));
 };
 
 // client.stats:

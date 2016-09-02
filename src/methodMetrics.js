@@ -3,7 +3,7 @@ import * as metrics from './metrics';
 export default (instance, key, instanceName, methods) => {
   methods.forEach(methodName => {
     const originalMethod = instance[methodName];
-    instance[methodName] = function (...args) {
+    instance[methodName] = function tracked(...args) { // eslint-disable-line no-param-reassign
       const start = Date.now();
       const result = originalMethod.apply(this, args);
 
@@ -12,12 +12,8 @@ export default (instance, key, instanceName, methods) => {
         .catch(() => 'rejected')
         .then(status => {
           const duration = Date.now() - start;
-          const tags = [
-            `status:${status}`,
-            `method:${instanceName}/${methodName}`,
-          ];
-          metrics.count(`node.${key}.call`, 1, tags);
-          metrics.gauge(`node.${key}.time`, duration, tags);
+
+          metrics.timing(`${key}.${instanceName}.${methodName}.${status}`, duration);
         });
 
       return result;
