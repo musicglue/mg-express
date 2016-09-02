@@ -1,11 +1,11 @@
 import cluster from 'cluster';
+import { times } from 'lodash';
 import logger from './logger';
-import os from 'os';
 
-export default () => {
+export default (clusterSize) => {
   logger.info(`Master started (pid: ${process.pid})`);
 
-  os.cpus().forEach(() => cluster.fork());
+  times(clusterSize, () => cluster.fork());
 
   cluster.on('exit', (worker, code) => {
     logger.info(`Worker ${worker.process.pid} died (${code}), restarting...`);

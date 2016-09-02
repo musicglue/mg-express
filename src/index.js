@@ -6,6 +6,7 @@ import bugsnag from 'bugsnag';
 import cluster from 'cluster';
 import express from 'express';
 import morgan from 'morgan';
+import os from 'os';
 import util from 'util';
 import Bluebird from 'bluebird';
 
@@ -31,6 +32,7 @@ const defaultConfig = {
   bugsnagFilters: [],
   bugsnagIgnore: [],
   cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
+  clusterSize: Math.min(1, parseInt(process.env.CLUSTER_SIZE || os.cpus().length - 1, 10)),
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
@@ -79,7 +81,7 @@ export default (options) => {
     logger.error(`Unhandled rejection: ${((err && err.stack) || util.inspect(err))}`));
 
   if (config.cluster && cluster.isMaster) {
-    setupCluster();
+    setupCluster(config.clusterSize);
     return null;
   }
 
