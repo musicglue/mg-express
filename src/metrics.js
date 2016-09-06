@@ -12,8 +12,20 @@ export const setup = ({ host, port, prefix }) => {
   statsd = new StatsD(host, port, `${prefix}.`);
 };
 
-const reporter = type => (...args) => {
-  if (statsd) statsd[type](...args);
+const sampleBucketTime = 1000; // ms
+const targetRate = parseInt(process.env.STATSD_STATS_PER_SECOND || 20, 10);
+
+let samples = 0;
+let sampleRate = 1;
+
+setInterval(() => {
+  sampleRate = Math.min(1, targetRate / samples);
+  samples = 0;
+}, sampleBucketTime);
+
+const reporter = type => (stat, value) => {
+  samples++;
+  if (statsd) statsd[type](stat, value, sampleRate);
 };
 
 export const timing = reporter('timing');
