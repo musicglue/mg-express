@@ -12,8 +12,8 @@ export const setup = ({ host, port, prefix }) => {
   statsd = new StatsD(host, port, `${prefix}.`);
 };
 
-const sampleBucketTime = 500; // ms
-const targetRate = 50; // samples per bucket time
+const sampleBucketTime = 1000; // ms
+const targetRate = parseInt(process.env.STATSD_STATS_PER_SECOND || 20, 10);
 
 let samples = 0;
 let sampleRate = 1;
