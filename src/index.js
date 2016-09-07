@@ -32,7 +32,7 @@ const defaultConfig = {
   bugsnagFilters: [],
   bugsnagIgnore: [],
   cluster: !!(process.env.NODE_ENV === 'production' || process.env.CLUSTER),
-  clusterSize: Math.min(1, parseInt(process.env.CLUSTER_SIZE || os.cpus().length - 1, 10)),
+  clusterSize: Math.max(1, parseInt(process.env.CLUSTER_SIZE || os.cpus().length - 1, 10)),
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
