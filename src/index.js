@@ -11,6 +11,7 @@ import Bluebird from 'bluebird';
 
 import errorHandler from './errorHandler';
 import logger from './logger';
+import pingResponder from './pingResponder';
 import setupCluster from './setupCluster';
 import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
@@ -35,6 +36,7 @@ const defaultConfig = {
   consul: null,
   defaultContentType: 'application/json',
   errorHandler,
+  healthSignalHandling: !!process.env.SIGNAL_BASED_HEALTH,
   listen: null,
   logFormat: 'short',
   name: false,
@@ -116,7 +118,7 @@ export default (options) => {
       .catch(next);
 
   if (config.name) app.get('/', (req, res) => res.send(config.name));
-  if (config.ping) app.get(config.ping, (req, res) => res.send('OK'));
+  if (config.ping) app.get(config.ping, pingResponder(config));
 
   config.beforeHandlers(app);
 
