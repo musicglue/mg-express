@@ -12,17 +12,18 @@ const consoleLogger = new winston.transports.Console({
 
 const transports = [consoleLogger];
 
+function ensureLogLevel(level) {
+  return level || 'info';
+}
+
 if (process.env.NODE_ENV === 'production' && process.env.PAPERTRAIL_HOST) {
   transports.push(new Papertrail({
     host: process.env.PAPERTRAIL_HOST,
     port: process.env.PAPERTRAIL_PORT,
     program: process.env.PAPERTRAIL_PROGRAM,
+    level: ensureLogLevel(config('LOG_LEVEL')),
     logFormat: (level, message) => `[${level}] ${message}`,
   }));
-}
-
-function ensureLogLevel(level) {
-  return level || 'info';
 }
 
 const logger = new winston.Logger({
@@ -33,6 +34,7 @@ const logger = new winston.Logger({
 
 subscribe('LOG_LEVEL', level => {
   logger.level = ensureLogLevel(level);
+  transports.forEach(transport => { transport.level = ensureLogLevel(level); }); // eslint-disable-line
 });
 
 logger.stream = {
