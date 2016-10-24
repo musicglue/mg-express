@@ -91,7 +91,14 @@ export default (options) => {
   config.before(app);
 
   if (!test && config.bugsnag) app.use(bugsnag.requestHandler);
-  if (!test) app.use(morgan(config.logFormat, { stream: logger.stream }));
+  if (!test) {
+    app.use(morgan(config.logFormat, {
+      skip(req) {
+        return config.ping && (req.path === config.ping) && (process.env.LOG_LEVEL !== 'debug');
+      },
+      stream: logger.stream,
+    }));
+  }
   if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
 
   /* eslint-disable no-param-reassign */
