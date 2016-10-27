@@ -78,7 +78,7 @@ export default (options) => {
   process.on('uncaughtException', err =>
     logger.error(`Uncaught exception: ${((err && err.stack) || util.inspect(err))}`));
 
-  process.on('unhandledRejecion', err =>
+  process.on('unhandledRejection', err =>
     logger.error(`Unhandled rejection: ${((err && err.stack) || util.inspect(err))}`));
 
   if (config.cluster && cluster.isMaster) {
