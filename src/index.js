@@ -75,8 +75,8 @@ export default (options) => {
     return !config.bugsnagIgnore.includes(error.errorClass);
   });
 
-  process.on('unhandledException', err =>
-    logger.error(`Unhandled exception: ${((err && err.stack) || util.inspect(err))}`));
+  process.on('uncaughtException', err =>
+    logger.error(`Uncaught exception: ${((err && err.stack) || util.inspect(err))}`));
 
   process.on('unhandledRejecion', err =>
     logger.error(`Unhandled rejection: ${((err && err.stack) || util.inspect(err))}`));
