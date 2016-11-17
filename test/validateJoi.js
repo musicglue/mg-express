@@ -10,7 +10,7 @@ chai.use(dirtyChai);
 describe('joi validation', () => {
   context('when the schema is not valid', () => {
     const schema = {
-      validate: (value, callback) => {
+      validate: (value, options, callback) => {
         const err = new Error();
         err.name = 'ValidationError';
 
@@ -26,7 +26,7 @@ describe('joi validation', () => {
 
   context('when the schema is valid', () => {
     const schema = {
-      validate: (value, callback) => callback(null, value),
+      validate: (value, options, callback) => callback(null, value),
     };
 
     it('resolves', () => expect(validate(schema, null)).to.be.fulfilled());
