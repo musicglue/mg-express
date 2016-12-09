@@ -1,7 +1,11 @@
 import { expect } from 'chai';
 import sanitise from '../src/textSanitiser';
 
-describe('error sanitiser', () => {
+describe('text sanitiser', () => {
+  describe('sanitising non-strings', () => {
+    it('returns undefined if given undefined', () => expect(sanitise(undefined)).to.be.undefined);
+  });
+
   describe('the error message does not contain anything that looks sensitive', () => {
     const text = 'foo is blah pass word cvx cord number';
 
