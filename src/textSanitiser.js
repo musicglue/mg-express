@@ -1,3 +1,5 @@
+import { isString } from 'lodash';
+
 const cache = {};
 const escapeChars = '\\u001b\\[\\d{1,2}m';
 const splitter = `(?:${escapeChars}|\\s)*:(?:${escapeChars}|\\s)*`;
@@ -64,5 +66,5 @@ export const sanitisers = [
 const sanitiseLine = line => sanitisers.reduce((p, c) => c(p), line);
 
 export default function (text) {
-  return text.split('\n').map(sanitiseLine).join('\n');
+  return isString(text) ? text.split('\n').map(sanitiseLine).join('\n') : text;
 }
