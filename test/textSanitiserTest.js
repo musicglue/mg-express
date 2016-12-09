@@ -1,9 +1,13 @@
-import { expect } from 'chai';
+import dirtyChai from 'dirty-chai';
+import chai, { expect } from 'chai';
+
+chai.use(dirtyChai);
+
 import sanitise from '../src/textSanitiser';
 
 describe('text sanitiser', () => {
   describe('sanitising non-strings', () => {
-    it('returns undefined if given undefined', () => expect(sanitise(undefined)).to.be.undefined);
+    it('returns undefined if given undefined', () => expect(sanitise(undefined)).to.be.undefined());
   });
 
   describe('the error message does not contain anything that looks sensitive', () => {
