@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import os from 'os';
-import profiler from 'v8-profiler';
+import profiler from '@risingstack/v8-profiler';
 
 import { subscribe } from './config';
 import logger from './logger';
