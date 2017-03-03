@@ -41,21 +41,20 @@
     "mocha": "^3.0.0"
   },
   "dependencies": {
-    "@risingstack/v8-profiler": "^5.7.0",
-    "aws-sdk": "^2.4.12",
+    "aws-sdk": "^2.22.0",
     "babel-polyfill": "^6.9.1",
-    "bluebird": "^3.4.1",
-    "body-parser": "^1.15.2",
-    "bugsnag": "^1.7.0",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.17.0",
+    "bugsnag": "^1.9.1",
     "clarify": "^2.0.0",
-    "consul": "^0.25.0",
-    "express": "^4.14.0",
+    "consul": "^0.28.0",
+    "express": "^4.15.0",
     "lodash": "^4.15.0",
-    "morgan": "^1.7.0",
+    "morgan": "^1.8.1",
     "node-statsd": "^0.1.1",
     "node-uuid": "^1.4.7",
     "statuses": "^1.3.0",
-    "winston": "^2.2.0",
-    "winston-papertrail": "^1.0.2"
+    "winston": "^2.3.1",
+    "winston-papertrail": "^1.0.4"
   }
 }

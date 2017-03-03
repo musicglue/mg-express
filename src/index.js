@@ -13,7 +13,6 @@ import errorHandler from './errorHandler';
 import logger from './logger';
 import pingResponder from './pingResponder';
 import setupCluster from './setupCluster';
-import setupProfiler from './profiler';
 import { bootstrapConsul } from './config';
 import * as metrics from './metrics';
 
@@ -59,7 +58,6 @@ export default (options) => {
     Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
 
   if (!test && config.consul) bootstrapConsul(config.consul);
-  if (!test && config.consul && config.profilingEnabled) setupProfiler();
 
   if (!test && config.bugsnag) bugsnag.register(config.bugsnag, {
     releaseStage,
