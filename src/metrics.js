@@ -17,7 +17,7 @@ export const setup = ({ host, port, prefix, opts = {} }) => {
   });
 };
 
-const reporter = type => (stat, value) => statsd[type](stat, value, 0.2);
+const reporter = type => (stat, value) => (statsd ? statsd[type](stat, value) : true);
 
 export const timing = reporter('timing');
 export const increment = reporter('increment');
