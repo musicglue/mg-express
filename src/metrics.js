@@ -1,32 +1,23 @@
-import StatsD from 'node-statsd';
+import StatsD from 'hot-shots';
 import logger from './logger';
 
 let statsd = null;
 
-export const setup = ({ host, port, prefix }) => {
+export const setup = ({ host, port, prefix, opts = {} }) => {
   if (!(host && port)) {
     logger.debug('[metrics] setup called without statsd host and port');
     return;
   }
 
-  statsd = new StatsD(host, port, `${prefix}.`);
+  statsd = new StatsD({
+    ...opts,
+    host,
+    port,
+    prefix: `${prefix}.`,
+  });
 };
 
-const sampleBucketTime = 1000; // ms
-const targetRate = parseInt(process.env.STATSD_STATS_PER_SECOND || 20, 10);
-
-let samples = 0;
-let sampleRate = 1;
-
-setInterval(() => {
-  sampleRate = Math.min(1, targetRate / samples);
-  samples = 0;
-}, sampleBucketTime);
-
-const reporter = type => (stat, value) => {
-  samples++;
-  if (statsd) statsd[type](stat, value, sampleRate);
-};
+const reporter = type => (stat, value) => statsd[type](stat, value, 0.2);
 
 export const timing = reporter('timing');
 export const increment = reporter('increment');
@@ -53,7 +44,11 @@ export const middleware = (req, res, next) => {
     const route = ((req.route && req.route.path) || 'UNKNOWN_ROUTE')
       .replace(/[^a-zA-Z0-9]+/g, '_');
 
-    timing(`routes.${method}.${route}.response.${res.statusCode}`, Date.now() - req[START_TIME]);
+    timing(
+      `routes.${method}.${route}`,
+      Date.now() - req[START_TIME],
+      [`status:${res.statusCode}`]
+    );
   };
 
   next();

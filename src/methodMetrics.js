@@ -12,13 +12,17 @@ export default (instance, key, instanceName, methods) => {
       const start = Date.now();
       const result = originalMethod.apply(this, args);
 
+      const metricName = `${key}.${instanceName}.${methodName}`;
+
+      metrics.increment(metricName);
+
       Promise.resolve(result)
         .then(() => 'resolved')
         .catch(() => 'rejected')
         .then(status => {
           const duration = Date.now() - start;
 
-          metrics.timing(`${key}.${instanceName}.${methodName}.${status}`, duration);
+          metrics.timing(metricName, duration, [`status:${status}`]);
         });
 
       return result;
