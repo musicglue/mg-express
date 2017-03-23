@@ -10,5 +10,5 @@ export default (config) => {
     });
   }
 
-  return (req, res) => (active ? res.send('OK') : res.sendStatus(503));
+  return (req, res) => (active ? res.send('OK') : res.sendStatus(429));
 };
