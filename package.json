@@ -43,7 +43,6 @@
   "dependencies": {
     "aws-sdk": "^2.22.0",
     "babel-polyfill": "^6.9.1",
-    "bluebird": "^3.4.7",
     "body-parser": "^1.17.0",
     "bugsnag": "^1.9.1",
     "clarify": "^2.0.0",

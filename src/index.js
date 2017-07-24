@@ -7,7 +7,6 @@ import express from 'express';
 import morgan from 'morgan';
 import os from 'os';
 import util from 'util';
-import Bluebird from 'bluebird';
 
 import errorHandler from './errorHandler';
 import logger from './logger';
@@ -16,7 +15,6 @@ import setupCluster from './setupCluster';
 import { bootstrapConsul } from './config';
 import * as metrics from './metrics';
 
-global.Promise = Bluebird;
 Error.stackTraceLimit = 1000;
 
 const defaultConfig = {
@@ -41,7 +39,6 @@ const defaultConfig = {
   name: false,
   ping: '/_____ping_____',
   profilingEnabled: !!process.env.PROFILING_ENABLED,
-  promisify: [],
   statsd: null,
   statsdMiddleware: true,
 };
@@ -53,9 +50,6 @@ export default (options) => {
   const app = express();
   const test = process.env.NODE_ENV === 'test';
   const releaseStage = process.env.AWS_ENV || 'local';
-
-  config.promisify.forEach(module =>
-    Bluebird.promisifyAll(require(module))); // eslint-disable-line global-require
 
   if (!test && config.consul) bootstrapConsul(config.consul);
 
