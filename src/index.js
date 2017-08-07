@@ -100,7 +100,7 @@ export default (options) => {
   });
 
   if (config.amazonJSON) app.use((req, res, next) => {
-    if (req.headers['user-agent'].indexOf('Amazon') > -1) {
+    if (req.headers['user-agent'] && req.headers['user-agent'].indexOf('Amazon') > -1) {
       req.headers['content-type'] = 'application/json';
     }
 
