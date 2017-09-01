@@ -41,13 +41,13 @@
     "mocha": "^3.0.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.22.0",
+    "aws-sdk": "^2.107.0",
     "babel-polyfill": "^6.9.1",
     "body-parser": "^1.17.0",
     "bugsnag": "^1.12.1",
     "clarify": "^2.0.0",
-    "consul": "^0.28.0",
-    "express": "^4.15.0",
+    "consul": "^0.29.0",
+    "express": "^4.15.4",
     "hot-shots": "^4.3.1",
     "lodash": "^4.15.0",
     "morgan": "^1.8.1",
