@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import 'clarify';
 import bodyParser from 'body-parser';
 import bugsnag from 'bugsnag';
 import cluster from 'cluster';
