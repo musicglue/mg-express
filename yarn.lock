@@ -544,13 +544,14 @@ buffer@4.9.1:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-bugsnag@^1.9.1:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/bugsnag/-/bugsnag-1.11.0.tgz#6f9c05b1b060d18e151c9f922ef366f1f5a32ac4"
+bugsnag@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/bugsnag/-/bugsnag-1.12.1.tgz#54e30ae0c3db1c5c298eecd9fe8ab4004a7ebba6"
   dependencies:
+    json-stringify-safe "~5.0.1"
     promise "7.x"
-    request "2.x"
-    stack-trace "0.0.9"
+    request "^2.81.0"
+    stack-trace "~0.0.9"
 
 builtin-modules@^1.1.1:
   version "1.1.1"
@@ -2233,7 +2234,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@2.x, request@^2.81.0:
+request@^2.81.0:
   version "2.81.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
@@ -2413,11 +2414,7 @@ stack-chain@1.3.x:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/stack-chain/-/stack-chain-1.3.7.tgz#d192c9ff4ea6a22c94c4dd459171e3f00cea1285"
 
-stack-trace@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.9.tgz#a8f6eaeca90674c333e7c43953f275b451510695"
-
-stack-trace@0.0.x:
+stack-trace@0.0.x, stack-trace@~0.0.9:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
 
