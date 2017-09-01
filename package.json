@@ -45,7 +45,6 @@
     "babel-polyfill": "^6.9.1",
     "body-parser": "^1.17.0",
     "bugsnag": "^1.12.1",
-    "clarify": "^2.0.0",
     "consul": "^0.29.0",
     "express": "^4.15.4",
     "hot-shots": "^4.3.1",
