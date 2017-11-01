@@ -81,7 +81,6 @@ export default (options) => {
   }
 
   if (!test && config.statsd) metrics.setup(config.statsd);
-  if (!test && config.datadog) datadog.setup(config.datadog);
 
   config.before(app);
 
@@ -94,8 +93,10 @@ export default (options) => {
       stream: logger.stream,
     }));
   }
-  if (!test && config.datadog && config.datadogMiddleware) app.use(datadog.middleware);
   if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
+  if (!test && config.datadog && config.datadogMiddleware) {
+    app.use(datadog.middlewareFactory(config.datadog));
+  }
 
   /* eslint-disable no-param-reassign */
   if (config.defaultContentType) app.use((req, res, next) => {

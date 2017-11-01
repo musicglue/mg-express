@@ -1,13 +1,6 @@
 import Tracer from 'datadog-tracer';
 import logger from './logger';
 
-let tracer = null;
-
-export const setup = (opts) => {
-  tracer = new Tracer(opts);
-  tracer.on('error', e => logger.error(e));
-};
-
 const endTrace = (req, res) => {
   const { traceSpan } = req;
   traceSpan.addTags({
@@ -21,13 +14,18 @@ const endTrace = (req, res) => {
   traceSpan.finish();
 };
 
-/* eslint-disable no-param-reassign */
-export const middleware = (req, res, next) => {
-  const traceSpan = tracer.startSpan('express.request');
-  req.traceSpan = traceSpan;
+/* eslint-disable no-param-reassign, import/prefer-default-export */
+export const middlewareFactory = (opts) => {
+  const tracer = new Tracer(opts);
+  tracer.on('error', e => logger.error(e));
 
-  res.on('finish', () => endTrace(req, res));
-  res.on('close', () => endTrace(req, res));
+  return (req, res, next) => {
+    const traceSpan = tracer.startSpan('express.request');
+    req.traceSpan = traceSpan;
 
-  next();
+    res.on('finish', () => endTrace(req, res));
+    res.on('close', () => endTrace(req, res));
+
+    next();
+  };
 };
