@@ -7,12 +7,13 @@ import morgan from 'morgan';
 import os from 'os';
 import util from 'util';
 
+import * as datadog from './datadog';
+import * as metrics from './metrics';
 import errorHandler from './errorHandler';
 import logger from './logger';
 import pingResponder from './pingResponder';
 import setupCluster from './setupCluster';
 import { bootstrapConsul } from './config';
-import * as metrics from './metrics';
 
 Error.stackTraceLimit = 1000;
 
@@ -30,6 +31,8 @@ const defaultConfig = {
   cluster: !!process.env.CLUSTER,
   clusterSize: Math.max(1, parseInt(process.env.CLUSTER_SIZE || os.cpus().length - 1, 10)),
   consul: null,
+  datadog: null,
+  datadogMiddleware: true,
   defaultContentType: 'application/json',
   errorHandler,
   healthSignalHandling: !!process.env.SIGNAL_BASED_HEALTH,
@@ -91,6 +94,9 @@ export default (options) => {
     }));
   }
   if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
+  if (!test && config.datadog && config.datadogMiddleware) {
+    app.use(datadog.middlewareFactory(config.datadog));
+  }
 
   /* eslint-disable no-param-reassign */
   if (config.defaultContentType) app.use((req, res, next) => {
