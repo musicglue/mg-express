@@ -17,7 +17,11 @@ const endTrace = (req, res) => {
 /* eslint-disable no-param-reassign, import/prefer-default-export */
 export const middlewareFactory = (opts) => {
   const tracer = new Tracer(opts);
-  tracer.on('error', e => logger.error(e));
+  tracer.on('error', e => {
+    if (process.env.AWS_ENV === "production") {
+      logger.error(e);
+    }
+  });
 
   return (req, res, next) => {
     const traceSpan = tracer.startSpan('express.request');
