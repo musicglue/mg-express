@@ -27,6 +27,7 @@ export const middlewareFactory = (opts) => {
     const traceSpan = tracer.startSpan('express.request');
     req.traceSpan = traceSpan;
 
+    res.on('error', () => { traceSpan.setTag('error', true); });
     res.on('finish', () => endTrace(req, res));
     res.on('close', () => endTrace(req, res));
 
