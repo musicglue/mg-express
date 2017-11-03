@@ -3,7 +3,7 @@ import logger from './logger';
 
 const endTrace = (req, res) => {
   const { traceSpan } = req;
-  const resource = req.route != null ? req.route.path : 'undefined';
+  const resource = req.route != null ? req.route.path : 'middleware';
 
   traceSpan.addTags({
     resource,
