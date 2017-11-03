@@ -3,8 +3,10 @@ import logger from './logger';
 
 const endTrace = (req, res) => {
   const { traceSpan } = req;
+  const resource = req.route != null ? req.route.path : 'undefined';
+
   traceSpan.addTags({
-    resource: req.route.path,
+    resource,
     type: 'web',
     'http.method': req.method,
     'http.url': req.url,
@@ -18,7 +20,7 @@ const endTrace = (req, res) => {
 export const middlewareFactory = (opts) => {
   const tracer = new Tracer(opts);
   tracer.on('error', e => {
-    if (process.env.AWS_ENV === "production") {
+    if (process.env.AWS_ENV === 'production') {
       logger.error(e);
     }
   });
