@@ -93,6 +93,10 @@ export default (options) => {
       stream: logger.stream,
     }));
   }
+
+  if (config.name) app.get('/', (req, res) => res.send(config.name));
+  if (config.ping) app.get(config.ping, pingResponder(config));
+
   if (!test && config.statsd && config.statsdMiddleware) app.use(metrics.middleware);
   if (!test && config.datadog && config.datadogMiddleware) {
     app.use(datadog.middlewareFactory(config.datadog));
@@ -120,9 +124,6 @@ export default (options) => {
       .then(() => handler(req))
       .then(({ payload = {}, status = 200 }) => res.status(status).json(payload))
       .catch(next);
-
-  if (config.name) app.get('/', (req, res) => res.send(config.name));
-  if (config.ping) app.get(config.ping, pingResponder(config));
 
   config.beforeHandlers(app);
 
