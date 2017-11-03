@@ -1,6 +1,6 @@
 {
   "name": "@musicglue/mg-express",
-  "version": "6.2.3",
+  "version": "6.2.4",
   "description": "Express stuff used on all musicglue services",
   "main": "lib/index.js",
   "scripts": {
