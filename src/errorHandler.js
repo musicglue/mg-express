@@ -12,8 +12,8 @@ export default (serviceName) => (err, req, res, next) => { // eslint-disable-lin
 
   req.traceSpan.addTags({
     'ctx.headers': JSON.stringify(req.headers),
-    'req.body': JSON.stringify(sanitise(req.body)),
-    'req.params': JSON.stringify(sanitise(req.params)),
+    'req.body': sanitise(JSON.stringify(req.body)),
+    'req.params': sanitise(JSON.stringify(req.params)),
     error: true,
     'error.msg': err.message,
     'error.stack': err.stack,
