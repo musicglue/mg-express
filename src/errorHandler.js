@@ -10,16 +10,18 @@ export default (serviceName) => (err, req, res, next) => { // eslint-disable-lin
 
   if (logErrors) logger.error((err && err.stack) || err);
 
-  req.traceSpan.addTags({
-    'ctx.headers': JSON.stringify(req.headers),
-    'req.body': sanitise(JSON.stringify(req.body)),
-    'req.params': sanitise(JSON.stringify(req.params)),
-    error: true,
-    'error.msg': err.message,
-    'error.stack': err.stack,
-    'error.type': err.name,
-    'http.status_code': status,
-  });
+  if (req.traceSpan) {
+    req.traceSpan.addTags({
+      'ctx.headers': JSON.stringify(req.headers),
+      'req.body': sanitise(JSON.stringify(req.body)),
+      'req.params': sanitise(JSON.stringify(req.params)),
+      error: true,
+      'error.msg': err.message,
+      'error.stack': err.stack,
+      'error.type': err.name,
+      'http.status_code': status,
+    });
+  }
 
   res.status(status).json({
     status,

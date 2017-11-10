@@ -5,15 +5,17 @@ const endTrace = (req, res) => {
   const { traceSpan } = req;
   const resource = req.route != null ? req.route.path : 'middleware';
 
-  traceSpan.addTags({
-    resource,
-    type: 'web',
-    'http.method': req.method,
-    'http.url': req.url,
-    'http.status_code': res.statusCode,
-  });
+  if (traceSpan) {
+    traceSpan.addTags({
+      resource,
+      type: 'web',
+      'http.method': req.method,
+      'http.url': req.url,
+      'http.status_code': res.statusCode,
+    });
 
-  traceSpan.finish();
+    traceSpan.finish();
+  }
 };
 
 /* eslint-disable no-param-reassign, import/prefer-default-export */
