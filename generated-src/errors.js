@@ -182,6 +182,14 @@ export class FailedDependencyError extends HttpError {
   }
 
 }
+export class TooEarlyError extends HttpError {
+  constructor(msg) {
+    super(msg);
+    this.name = "TooEarlyError";
+    this.status = 425;
+  }
+
+}
 export class UpgradeRequiredError extends HttpError {
   constructor(msg) {
     super(msg);
