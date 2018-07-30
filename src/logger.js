@@ -38,7 +38,7 @@ subscribe('LOG_LEVEL', level => {
 });
 
 logger.stream = {
-  write: (message) => logger.info(message),
+  write: (message) => logger.info(typeof message === 'string' ? message.trim() : message),
 };
 
 export default logger;
